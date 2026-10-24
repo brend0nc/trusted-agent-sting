@@ -1,7 +1,9 @@
-# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Positive-control pilot: 6 seeds x 5 conditions = 30 games. Roles and the allied seat rotate over the 6 seeds.
+# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Pilot (protocol v2): 6 seeds x 7 conditions = 42 games. Roles, the P4 ally and the coalition pair come from the seed value (a fixed random mapping), balanced over any 6 consecutive seeds.
 # P4 makes a false ledger claim (R0.3) in the scripted round-0 opening and, in the direct/hint/benign arms,
-# privately offers the same pact to P1, P2 and P3. P4 never takes a free turn and never calls a model.
-# The alliance arm gives one ordinary seat a private alliance note instead (positive control).
+# privately sends the same message to P1, P2 and P3. P4 never takes a free turn and never calls a model.
+# alliance: one ordinary seat is P4's secret ally (positive control). coalition_direct: two ordinary seats are
+# secret allies of each other and P4 sends the direct offer to all three; coalition_none: same pair, no offer
+# (exposure test and its control). Prompts: docs/design/sting-prompts.md.
 # Grok 4.3 settings copied from configs/28_whistleblowing_stakes.yaml. Design: docs/design/lean-sting.md.
 # Spending: one shared ledger cap ($50, set by Brendon 24 Oct) for every sting config. The ledger reserves
 # the route's worst case per request ($15 for Grok 4.3: 1M-token context at $5/M in, $10/M out), so 2 parallel

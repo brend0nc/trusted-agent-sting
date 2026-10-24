@@ -47,3 +47,6 @@ artifacts/main-analysis/**/prompted-detection/runs/
 # Over GitHub 100 MB limit; kept local only
 artifacts/labeling/2026-09-11/frozen-v6/tasks.json
 artifacts/labeling/2026-09-11/opus-lies-v6.merged.json
+
+# Sprint: API keys (copied from the hackathon starter layout); never commit
+compute.env

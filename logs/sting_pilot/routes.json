@@ -1,0 +1,628 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-10-24T20:14:26.626188+00:00",
+  "models": {
+    "grok-4.3": {
+      "model": "openrouter/x-ai/grok-4.3",
+      "provider_tag": "xai",
+      "provider_name": "xAI",
+      "context_length": 1000000,
+      "max_completion_tokens": 900000,
+      "price_ceiling": {
+        "completion": "0.00001",
+        "input_cache_read": "8E-7",
+        "input_cache_write": "0",
+        "prompt": "0.000005",
+        "request": "0"
+      },
+      "routing_price_ceiling": {
+        "prompt": "0.0000025",
+        "completion": "0.000005",
+        "input_cache_read": "4E-7",
+        "input_cache_write": "0",
+        "request": "0"
+      },
+      "supported_parameters": [
+        "reasoning",
+        "include_reasoning",
+        "structured_outputs",
+        "response_format",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "seed",
+        "logprobs",
+        "top_logprobs",
+        "tools",
+        "tool_choice",
+        "reasoning_effort"
+      ],
+      "reasoning": {
+        "mandatory": false,
+        "default_enabled": true,
+        "supported_efforts": [
+          "high",
+          "medium",
+          "low",
+          "none"
+        ],
+        "default_effort": "low"
+      },
+      "evidence": "https://openrouter.ai/api/v1/models/x-ai/grok-4.3/endpoints",
+      "catalog_model": {
+        "id": "x-ai/grok-4.3",
+        "canonical_slug": "x-ai/grok-4.3-20260430",
+        "hugging_face_id": null,
+        "name": "SpaceXAI: Grok 4.3",
+        "created": 1777591821,
+        "description": "Grok 4.3 is a reasoning model from SpaceXAI. It accepts text and image inputs with text output, and is suited for agentic workflows, instruction-following tasks, and applications requiring high factual...",
+        "context_length": 1000000,
+        "architecture": {
+          "modality": "text+image+file->text",
+          "input_modalities": [
+            "text",
+            "image",
+            "file"
+          ],
+          "output_modalities": [
+            "text"
+          ],
+          "tokenizer": "Grok",
+          "instruct_type": null
+        },
+        "pricing": {
+          "prompt": "0.00000125",
+          "completion": "0.0000025",
+          "web_search": "0.005",
+          "input_cache_read": "0.0000002",
+          "overrides": [
+            {
+              "min_prompt_tokens": 200000,
+              "prompt": "0.0000025",
+              "completion": "0.000005",
+              "input_cache_read": "0.0000004"
+            }
+          ]
+        },
+        "top_provider": {
+          "context_length": 1000000,
+          "max_completion_tokens": 900000,
+          "is_moderated": false
+        },
+        "per_request_limits": null,
+        "supported_parameters": [
+          "include_reasoning",
+          "logprobs",
+          "max_tokens",
+          "reasoning",
+          "reasoning_effort",
+          "response_format",
+          "seed",
+          "structured_outputs",
+          "temperature",
+          "tool_choice",
+          "tools",
+          "top_logprobs",
+          "top_p"
+        ],
+        "default_parameters": {
+          "temperature": null,
+          "top_p": null,
+          "top_k": null,
+          "frequency_penalty": null,
+          "presence_penalty": null,
+          "repetition_penalty": null
+        },
+        "supported_voices": null,
+        "knowledge_cutoff": null,
+        "expiration_date": null,
+        "links": {
+          "details": "/api/v1/models/x-ai/grok-4.3-20260430/endpoints"
+        },
+        "benchmarks": {
+          "design_arena": [
+            {
+              "arena": "agents",
+              "category": "agenticgamedev",
+              "elo": 1007,
+              "win_rate": 28.7,
+              "rank": 24
+            },
+            {
+              "arena": "agents",
+              "category": "agentichtmlslides",
+              "elo": 1066,
+              "win_rate": 31.8,
+              "rank": 9
+            },
+            {
+              "arena": "agents",
+              "category": "agenticslides",
+              "elo": 1072,
+              "win_rate": 31.9,
+              "rank": 9
+            },
+            {
+              "arena": "agents",
+              "category": "agenticslides(html)",
+              "elo": 1066,
+              "win_rate": 31.7,
+              "rank": 9
+            },
+            {
+              "arena": "agents",
+              "category": "agenticslides(python-pptx)",
+              "elo": 1068,
+              "win_rate": 32.4,
+              "rank": 9
+            },
+            {
+              "arena": "agents",
+              "category": "androidnative",
+              "elo": 964,
+              "win_rate": 22.7,
+              "rank": 38
+            },
+            {
+              "arena": "agents",
+              "category": "blender3d",
+              "elo": 828,
+              "win_rate": 13.2,
+              "rank": 21
+            },
+            {
+              "arena": "agents",
+              "category": "fullstack",
+              "elo": 1006,
+              "win_rate": 28.1,
+              "rank": 40
+            },
+            {
+              "arena": "agents",
+              "category": "godotgamedev",
+              "elo": 914,
+              "win_rate": 20.7,
+              "rank": 36
+            },
+            {
+              "arena": "agents",
+              "category": "htmlslides",
+              "elo": 905,
+              "win_rate": 28.4,
+              "rank": 25
+            },
+            {
+              "arena": "agents",
+              "category": "mobileapps",
+              "elo": 1056,
+              "win_rate": 33.3,
+              "rank": 45
+            },
+            {
+              "arena": "agents",
+              "category": "pptxslides",
+              "elo": 1071,
+              "win_rate": 32.5,
+              "rank": 8
+            },
+            {
+              "arena": "agents",
+              "category": "python-pptxslides",
+              "elo": 1072,
+              "win_rate": 30.8,
+              "rank": 27
+            },
+            {
+              "arena": "agents",
+              "category": "spreadsheet",
+              "elo": 942,
+              "win_rate": 31.8,
+              "rank": 20
+            },
+            {
+              "arena": "agents",
+              "category": "webapps",
+              "elo": 1126,
+              "win_rate": 42.8,
+              "rank": 33
+            },
+            {
+              "arena": "models",
+              "category": "3d",
+              "elo": 1125,
+              "win_rate": 40.8,
+              "rank": 82
+            },
+            {
+              "arena": "models",
+              "category": "asciiart",
+              "elo": 1125,
+              "win_rate": 42.6,
+              "rank": 54
+            },
+            {
+              "arena": "models",
+              "category": "codecategories",
+              "elo": 1185,
+              "win_rate": 43.6,
+              "rank": 63
+            },
+            {
+              "arena": "models",
+              "category": "dataviz",
+              "elo": 1180,
+              "win_rate": 45.1,
+              "rank": 66
+            },
+            {
+              "arena": "models",
+              "category": "gamedev",
+              "elo": 1172,
+              "win_rate": 43,
+              "rank": 66
+            },
+            {
+              "arena": "models",
+              "category": "svg",
+              "elo": 1081,
+              "win_rate": 37.1,
+              "rank": 67
+            },
+            {
+              "arena": "models",
+              "category": "uicomponent",
+              "elo": 1188,
+              "win_rate": 44.9,
+              "rank": 62
+            },
+            {
+              "arena": "models",
+              "category": "website",
+              "elo": 1194,
+              "win_rate": 44.1,
+              "rank": 68
+            }
+          ],
+          "artificial_analysis": {
+            "intelligence_index": 24.9,
+            "coding_index": 42.2,
+            "agentic_index": 15.5
+          }
+        },
+        "reasoning": {
+          "mandatory": false,
+          "default_enabled": true,
+          "supported_efforts": [
+            "high",
+            "medium",
+            "low",
+            "none"
+          ],
+          "default_effort": "low"
+        }
+      },
+      "endpoint": {
+        "name": "xAI | x-ai/grok-4.3-20260430",
+        "model_id": "x-ai/grok-4.3",
+        "model_name": "SpaceXAI: Grok 4.3",
+        "context_length": 1000000,
+        "pricing": {
+          "prompt": "0.00000125",
+          "completion": "0.0000025",
+          "web_search": "0.005",
+          "input_cache_read": "0.0000002",
+          "discount": 0,
+          "overrides": [
+            {
+              "min_prompt_tokens": 200000,
+              "prompt": "0.0000025",
+              "completion": "0.000005",
+              "input_cache_read": "0.0000004"
+            }
+          ]
+        },
+        "provider_name": "xAI",
+        "tag": "xai",
+        "service_tier": null,
+        "quantization": "unknown",
+        "max_completion_tokens": 900000,
+        "max_prompt_tokens": null,
+        "supported_parameters": [
+          "reasoning",
+          "include_reasoning",
+          "structured_outputs",
+          "response_format",
+          "max_tokens",
+          "temperature",
+          "top_p",
+          "seed",
+          "logprobs",
+          "top_logprobs",
+          "tools",
+          "tool_choice",
+          "reasoning_effort"
+        ],
+        "supports_tool_choice": {
+          "none": true,
+          "auto": true,
+          "required": true,
+          "function": true
+        },
+        "status": 0,
+        "uptime_last_30m": 100,
+        "uptime_last_5m": 100,
+        "uptime_last_1d": 99.65277777777779,
+        "supports_implicit_caching": true,
+        "native_tools": {
+          "openrouter:web_search": {
+            "type": "web_search"
+          }
+        },
+        "supports_voice_cloning": false,
+        "supports_multiple_audio_references": false,
+        "supports_image_reference": false,
+        "supports_diarization": false,
+        "latency_last_30m": null,
+        "throughput_last_30m": null
+      },
+      "matching_endpoints": [
+        {
+          "name": "xAI | x-ai/grok-4.3-20260430",
+          "model_id": "x-ai/grok-4.3",
+          "model_name": "SpaceXAI: Grok 4.3",
+          "context_length": 1000000,
+          "pricing": {
+            "prompt": "0.00000125",
+            "completion": "0.0000025",
+            "web_search": "0.005",
+            "input_cache_read": "0.0000002",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 200000,
+                "prompt": "0.0000025",
+                "completion": "0.000005",
+                "input_cache_read": "0.0000004"
+              }
+            ]
+          },
+          "provider_name": "xAI",
+          "tag": "xai/zdr",
+          "service_tier": null,
+          "quantization": "unknown",
+          "max_completion_tokens": 900000,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "reasoning",
+            "include_reasoning",
+            "structured_outputs",
+            "response_format",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "logprobs",
+            "top_logprobs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 100,
+          "uptime_last_5m": 100,
+          "uptime_last_1d": 99.09722222222223,
+          "supports_implicit_caching": true,
+          "native_tools": {
+            "openrouter:web_search": {
+              "type": "web_search"
+            }
+          },
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "supports_diarization": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "xAI | x-ai/grok-4.3-20260430",
+          "model_id": "x-ai/grok-4.3",
+          "model_name": "SpaceXAI: Grok 4.3",
+          "context_length": 1000000,
+          "pricing": {
+            "prompt": "0.00000125",
+            "completion": "0.0000025",
+            "web_search": "0.005",
+            "input_cache_read": "0.0000002",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 200000,
+                "prompt": "0.0000025",
+                "completion": "0.000005",
+                "input_cache_read": "0.0000004"
+              }
+            ]
+          },
+          "provider_name": "xAI",
+          "tag": "xai",
+          "service_tier": null,
+          "quantization": "unknown",
+          "max_completion_tokens": 900000,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "reasoning",
+            "include_reasoning",
+            "structured_outputs",
+            "response_format",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "logprobs",
+            "top_logprobs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": 100,
+          "uptime_last_5m": 100,
+          "uptime_last_1d": 99.65277777777779,
+          "supports_implicit_caching": true,
+          "native_tools": {
+            "openrouter:web_search": {
+              "type": "web_search"
+            }
+          },
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "supports_diarization": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "xAI | x-ai/grok-4.3-20260430",
+          "model_id": "x-ai/grok-4.3",
+          "model_name": "SpaceXAI: Grok 4.3",
+          "context_length": 1000000,
+          "pricing": {
+            "prompt": "0.0000025",
+            "completion": "0.000005",
+            "web_search": "0.005",
+            "input_cache_read": "0.0000004",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 200000,
+                "prompt": "0.000005",
+                "completion": "0.00001",
+                "input_cache_read": "0.0000008"
+              }
+            ]
+          },
+          "provider_name": "xAI",
+          "tag": "xai/zdr/priority",
+          "service_tier": "priority",
+          "quantization": "unknown",
+          "max_completion_tokens": 900000,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "reasoning",
+            "include_reasoning",
+            "structured_outputs",
+            "response_format",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "logprobs",
+            "top_logprobs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": null,
+          "uptime_last_5m": null,
+          "uptime_last_1d": null,
+          "supports_implicit_caching": true,
+          "native_tools": {
+            "openrouter:web_search": {
+              "type": "web_search"
+            }
+          },
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "supports_diarization": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        },
+        {
+          "name": "xAI | x-ai/grok-4.3-20260430",
+          "model_id": "x-ai/grok-4.3",
+          "model_name": "SpaceXAI: Grok 4.3",
+          "context_length": 1000000,
+          "pricing": {
+            "prompt": "0.0000025",
+            "completion": "0.000005",
+            "web_search": "0.005",
+            "input_cache_read": "0.0000004",
+            "discount": 0,
+            "overrides": [
+              {
+                "min_prompt_tokens": 200000,
+                "prompt": "0.000005",
+                "completion": "0.00001",
+                "input_cache_read": "0.0000008"
+              }
+            ]
+          },
+          "provider_name": "xAI",
+          "tag": "xai/priority",
+          "service_tier": "priority",
+          "quantization": "unknown",
+          "max_completion_tokens": 900000,
+          "max_prompt_tokens": null,
+          "supported_parameters": [
+            "reasoning",
+            "include_reasoning",
+            "structured_outputs",
+            "response_format",
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "seed",
+            "logprobs",
+            "top_logprobs",
+            "tools",
+            "tool_choice",
+            "reasoning_effort"
+          ],
+          "supports_tool_choice": {
+            "none": true,
+            "auto": true,
+            "required": true,
+            "function": true
+          },
+          "status": 0,
+          "uptime_last_30m": null,
+          "uptime_last_5m": null,
+          "uptime_last_1d": null,
+          "supports_implicit_caching": true,
+          "native_tools": {
+            "openrouter:web_search": {
+              "type": "web_search"
+            }
+          },
+          "supports_voice_cloning": false,
+          "supports_multiple_audio_references": false,
+          "supports_image_reference": false,
+          "supports_diarization": false,
+          "latency_last_30m": null,
+          "throughput_last_30m": null
+        }
+      ]
+    }
+  }
+}

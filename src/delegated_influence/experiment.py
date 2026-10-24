@@ -609,15 +609,20 @@ def task_arm_name(task_name: str, arms: list[dict[str, Any]]) -> str:
     return max(matches, key=len)
 
 
+def _acting_seats(metadata: dict[str, Any]) -> int:
+    """Seats that take model turns. The trusted-agent sting's scripted seat acts only in its opening."""
+    return len(metadata["seat_map"]) - (1 if (metadata.get("protocol") or {}).get("trusted") else 0)
+
+
 def _turns_per_episode(task_value: Any) -> int:
     metadata = task_value.dataset[0].metadata
-    return metadata["rounds"] * metadata["actions_per_round"] * len(metadata["seat_map"])
+    return metadata["rounds"] * metadata["actions_per_round"] * _acting_seats(metadata)
 
 
 def _calls_per_episode(task_value: Any) -> int:
     """Worst-case paid calls: every gameplay turn may consume its correction retry."""
     metadata = task_value.dataset[0].metadata
-    intents = (metadata["rounds"] * len(metadata["seat_map"])
+    intents = (metadata["rounds"] * _acting_seats(metadata)
                if metadata.get("declared_intents") else 0)
     return (_turns_per_episode(task_value) * task.turn.MAX_TURN_ATTEMPTS) + intents
 
@@ -625,7 +630,7 @@ def _calls_per_episode(task_value: Any) -> int:
 def _base_calls_per_episode(task_value: Any) -> int:
     """Normal calls before reserving for the one parse-correction retry."""
     metadata = task_value.dataset[0].metadata
-    intents = (metadata["rounds"] * len(metadata["seat_map"])
+    intents = (metadata["rounds"] * _acting_seats(metadata)
                if metadata.get("declared_intents") else 0)
     return _turns_per_episode(task_value) + intents
 

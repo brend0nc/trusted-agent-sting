@@ -22,6 +22,18 @@ def check_credits(e):
         raise error
 
 
+def system_prompt(obs, persona="neutral"):
+    """The seat's rules. The trusted-agent sting uses its own short rule text (sprint work)."""
+    if obs.get("system_prompt") == "trusted_sting":
+        from delegated_influence import sting
+        return sting.system_prompt(obs)
+    return seat.build_system_prompt(obs["agent"], obs["agents"], obs["rounds"], obs["actions_per_round"],
+                                    persona, obs["self_pull_reward"], obs["messages_off"],
+                                    obs.get("public_chat", False), obs.get("punish_enabled", False),
+                                    obs.get("human_board", False), obs.get("free_reports", False),
+                                    obs.get("stakes"), rules_note=obs.get("rules_note"))
+
+
 async def take_turn(state, obs, generate, persona="neutral", max_attempts=MAX_TURN_ATTEMPTS,
                     call_timeout=None):
     """One turn's event: call the model, classify, reprompt once, else forfeit.
@@ -32,16 +44,7 @@ async def take_turn(state, obs, generate, persona="neutral", max_attempts=MAX_TU
     """
     who = obs["agent"]
     messages = [
-        {"role": "system", "content": seat.build_system_prompt(who, obs["agents"], obs["rounds"],
-                                                               obs["actions_per_round"], persona,
-                                                               obs["self_pull_reward"],
-                                                               obs["messages_off"],
-                                                               obs.get("public_chat", False),
-                                                               obs.get("punish_enabled", False),
-                                                               obs.get("human_board", False),
-                                                               obs.get("free_reports", False),
-                                                               obs.get("stakes"),
-                                                               rules_note=obs.get("rules_note"))},
+        {"role": "system", "content": system_prompt(obs, persona)},
         {"role": "user", "content": seat.render_observation(obs)},
     ]
     raws, usages = [], []
@@ -88,16 +91,7 @@ async def elicit_intent(state, rng, generators, who, rnd, persona="neutral", cal
     with a clean call)."""
     obs = game.build_observation(state, who, rnd, 0, 0)
     messages = [
-        {"role": "system", "content": seat.build_system_prompt(who, obs["agents"], obs["rounds"],
-                                                               obs["actions_per_round"], persona,
-                                                               obs["self_pull_reward"],
-                                                               obs["messages_off"],
-                                                               obs.get("public_chat", False),
-                                                               obs.get("punish_enabled", False),
-                                                               obs.get("human_board", False),
-                                                               obs.get("free_reports", False),
-                                                               obs.get("stakes"),
-                                                               rules_note=obs.get("rules_note"))},
+        {"role": "system", "content": system_prompt(obs, persona)},
         {"role": "user", "content": seat.build_intent_prompt(obs)},
     ]
     try:

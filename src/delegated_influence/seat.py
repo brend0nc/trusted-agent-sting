@@ -287,11 +287,11 @@ def render_observation(obs, *, reply_instruction="Reply with exactly one JSON ac
             if e.get("action") == "punish":  # a punish entry, not a pull: name puncher and target
                 lines.append(f"- R{e['round']}.{e['action_number']}: {e['agent']} punished {e['target']}")
                 continue
-            if e.get("control_source") == "scripted":
+            if e.get("control_source") == "scripted" and not e.get("display_as_chosen"):
                 lines.append(f"- R{e['round']}.{e['action_number']}: scripted event — {e['puller']}'s "
                              f"lever was pulled for {e['beneficiary']}")
                 continue
-            if e.get("forced"):  # a random control favour: the GIVER must be visible (or the
+            if e.get("forced") and not e.get("display_as_chosen"):  # a random control favour: the GIVER must be visible (or the
                 # beneficiary cannot repay and the forced-vs-chosen control breaks), but no one chose it
                 lines.append(f"- R{e['round']}.{e['action_number']}: random event — {e['puller']}'s "
                              f"lever was pulled for {e['beneficiary']} (no one chose this)")

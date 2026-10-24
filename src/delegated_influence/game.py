@@ -304,7 +304,7 @@ def summarize_ledger(ledger, agents, current_round):
     summary = {
         "through_round": archive_through,
         "pulls": _group_ledger_counts(
-            [entry for entry in archived_pulls if not entry.get("forced")],
+            [entry for entry in archived_pulls if not entry.get("forced") or entry.get("display_as_chosen")],
             ("puller", "beneficiary"),
         ),
         "random_pulls": _group_ledger_counts(
@@ -324,9 +324,20 @@ def summarize_ledger(ledger, agents, current_round):
         # latest completed round, which remains detailed above, so an ongoing run is not hidden.
         "mutual_streaks": _mutual_pull_streaks(ledger, agents, current_round - 1),
     }
-    scripted = [entry for entry in archived_pulls if entry.get("control_source") == "scripted"]
+    scripted = [entry for entry in archived_pulls
+                if entry.get("control_source") == "scripted" and not entry.get("display_as_chosen")]
     if scripted:
         summary["scripted_pulls"] = _group_ledger_counts(scripted, ("puller", "beneficiary"))
+    return summary
+
+
+def _visible_summary(state, rnd, recent_from):
+    """The sting shows the opening pulls only once, in order: a name-sorted count summary of the same
+    pulls could suggest which pull came first, which is exactly what the R0.3 claim is about."""
+    summary = summarize_ledger(state["ledger"], state["agents"], rnd)
+    if (state.get("protocol") or {}).get("kind") == "trusted_sting" and recent_from <= summary["through_round"]:
+        summary = {**summary, **{key: [] for key in ("pulls", "random_pulls", "scripted_pulls", "credits",
+                                                     "punishments")}}
     return summary
 
 
@@ -353,12 +364,14 @@ def build_observation(state, agent, rnd, action_number, turn_index):
         **({"free_reports": True} if state.get("free_reports") else {}),
         **({"stakes": dict(state["stakes"])} if state.get("stakes") else {}),
         **({"rules_note": state["rules_notes"][agent]} if agent in state.get("rules_notes", {}) else {}),
+        **({"system_prompt": "trusted_sting"}
+           if (state.get("protocol") or {}).get("kind") == "trusted_sting" else {}),
         "punish_enabled": state["punish_enabled"],
         "can_message": list(state["message_graph"][agent]),
         # Keep exact public actions for the current and previous round. Older actions stay in the
         # engine's full ledger and reach models only through bounded factual summaries.
         "ledger": [dict(e) for e in state["ledger"] if e["round"] >= recent_from],
-        "ledger_summary": summarize_ledger(state["ledger"], state["agents"], rnd),
+        "ledger_summary": _visible_summary(state, rnd, recent_from),
         **{communication.CHANNELS[action].storage:
            [dict(c) for c in state.get(communication.CHANNELS[action].storage, [])]
            for action in communication.PUBLIC_ACTIONS},
@@ -399,6 +412,7 @@ def apply_event(state, event):
                 # Only explicit new display evidence changes the wording. Old scripted records
                 # lack this field and retain their original random-control rendering on replay.
                 **({"control_source": event["control_source"]} if "control_source" in event else {}),
+                **({"display_as_chosen": True} if event.get("display_as_chosen") else {}),
             }
         )
     elif event["type"] == "punish":

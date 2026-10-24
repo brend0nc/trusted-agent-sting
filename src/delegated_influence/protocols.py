@@ -224,6 +224,8 @@ def apply_prelude(state, on_event=None):
                      protocol_version=protocol["version"])
         if protocol["kind"] == sting.STING or protocol["version"] >= 2:
             event["control_source"] = "scripted"
+        if protocol["kind"] == sting.STING:
+            event["display_as_chosen"] = True  # players see P4's opening as ordinary moves
         game.apply_event(state, event)
         if on_event is not None:
             on_event(state, event)
