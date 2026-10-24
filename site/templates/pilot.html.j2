@@ -1,0 +1,157 @@
+{% extends "base.html.j2" %}
+{# Pilot-data page, written to pilot.html at the site root — every run that is NOT a
+   paper result: smoke, calibration, background checks, and in-progress runs. The same
+   tables and leaderboard treatment as the overview, but clearly quarantined. #}
+
+{% block title %}Test, pilot & calibration data — Delegated Influence{% endblock %}
+
+{% block content %}
+<main class="detail-main">
+
+<section id="pilot">
+  <p class="kicker">Not paper results</p>
+  <h2>Test, pilot, and calibration data</h2>
+  {% if data_status %}
+  <p>Everything on this page is test, smoke, calibration, held-out, or in-progress
+    data ({{ data_status.test_n }} episodes). None of it feeds the results on the
+    <a href="index.html">Overview</a>, which uses only the paper pool
+    ({{ data_status.paper_n }} episodes). Pilot numbers exist to check the instrument
+    and to size the real runs &mdash; treat every reading here as provisional.</p>
+  {% endif %}
+  {% if pilot_content %}{{ pilot_content.html | safe }}{% endif %}
+</section>
+
+<section id="pilot-leaderboard">
+  <p class="kicker">Pilot</p>
+  <h2>Pilot leaderboard</h2>
+  <p>The same extraction measure as the overview leaderboard, computed over the pilot
+    pool. Pools mix different games (attacker episodes, smokes, credit tests), so
+    rows are not comparable the way paper rows are.</p>
+  {% if pilot_leaderboard %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="num">rank</th><th>model</th><th class="num">n</th>
+          <th class="num">extraction<span class="th-gloss">share of rivals&rsquo; actions won</span></th>
+          <th class="num">95% CI</th><th class="num">points</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in pilot_leaderboard %}
+        <tr>
+          <td class="num">{{ r.rank }}</td>
+          <td class="mono">{{ r.model }}</td>
+          <td class="num">{{ r.n }}</td>
+          <td class="num">{{ r.extraction }}</td>
+          <td class="num">{{ r.ci }}</td>
+          <td class="num">{{ r.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">Rank by CI overlap: tied models share a rank (LMSYS convention).</p>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+<section id="pilot-coverage">
+  <p class="kicker">Pilot</p>
+  <h2>Test &amp; calibration configs</h2>
+  {% for g in coverage_groups if g.stage != 'confirmatory' %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>config</th><th>arm</th><th>task</th><th>conditions</th><th>instrument</th>
+          <th>served provenance</th><th class="num">analysis / duplicates</th>
+          <th class="num">done / planned</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in g.rows %}
+        <tr>
+          <td class="mono">{{ r.config }}</td>
+          <td>{{ r.arm }}</td>
+          <td class="mono">{{ r.task }}</td>
+          <td>{{ r.conditions }}</td>
+          <td>{{ r.instrument }}</td>
+          <td>{{ r.provenance }}</td>
+          <td class="num">{{ r.analysis }} / {{ r.duplicates }}</td>
+          <td class="num">{{ r.done }} / {{ r.planned }}</td>
+          <td>{% if r.pct is not none %}<div class="bar"><div style="width: {{ r.pct }}%"></div></div>{% else %}&mdash;{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+  <p class="table-note">Historical means the prompt/observation instrument was recovered from
+    saved calls. A served-model mix blocks paper pooling; a provider mix is shown for audit.</p>
+
+  <h3>Exploratory runs</h3>
+  {% if exploratory_runs %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>name</th><th>task</th><th>conditions</th>
+          <th class="num">episodes</th><th>started</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in exploratory_runs %}
+        <tr>
+          <td>{{ r.name }}</td>
+          <td class="mono">{{ r.task }}</td>
+          <td>{{ r.conditions }}</td>
+          <td class="num">{{ r.n }}</td>
+          <td class="mono">{{ r.started }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+<section id="pilot-provenance">
+  <p class="kicker">Provenance</p>
+  <h2>All eval files</h2>
+  <p class="note">Raw index of every <span class="mono">.eval</span> file behind this
+    site &mdash; paper, in-progress, and test runs alike.</p>
+  {% if runs %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>name</th><th>task</th><th>arm</th>
+          <th class="num">episodes</th><th>commit</th><th>started</th><th>eval file</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in runs %}
+        <tr>
+          <td>{{ r.name }}</td>
+          <td class="mono">{{ r.task }}</td>
+          <td>{{ r.arm }}</td>
+          <td class="num">{{ r.n }}</td>
+          <td class="mono">{{ r.commit }}</td>
+          <td class="mono">{{ r.started }}</td>
+          <td class="mono">{{ r.eval_file }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+</main>
+{% endblock %}

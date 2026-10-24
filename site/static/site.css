@@ -1,0 +1,453 @@
+/* Delegated Influence — results site.
+   A research document, not a product page: white ground, near-black ink, hairline
+   rules, one oxblood accent. No rounded corners, no shadows, no gradients. */
+
+:root {
+  --ink: #111;
+  --rule: #ddd;
+  --muted: #555;
+  --accent: #8b1a1a;
+  --serif: Georgia, 'Source Serif 4', serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  /* sans body for readability (Brendon 2026-07-07); headings stay serif */
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 600;
+  line-height: 1.25;
+}
+h2 { font-size: 22px; margin: 4px 0 12px; }
+h3 { font-size: 17px; margin: 28px 0 8px; }
+h4 { font-size: 15px; margin: 24px 0 6px; }
+
+.mono, code {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+code { font-size: 14px; }
+pre {
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 13px;
+  max-width: 100%;
+}
+pre code { font-size: inherit; }
+
+/* --- masthead --- */
+
+.masthead { border-bottom: 1px solid var(--rule); padding-top: 28px; }
+.masthead-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.project-title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+  font-variant-caps: small-caps;
+  letter-spacing: .05em;
+}
+.project-title a { color: var(--ink); text-decoration: none; }
+.project-desc { margin: 4px 0 0; color: var(--muted); max-width: 68ch; }
+.meta-line { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+.meta-line .mono { font-size: 12.5px; }
+.top-nav { margin-top: 14px; border-top: 1px solid var(--rule); padding: 8px 0; }
+.top-nav a {
+  margin-right: 22px;
+  font-variant-caps: small-caps;
+  letter-spacing: .08em;
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.top-nav a:hover { color: var(--accent); }
+
+.archive-notice {
+  max-width: 1052px;
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  border: 1px solid var(--accent);
+  color: var(--ink);
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.archive-notice strong { color: var(--accent); }
+
+/* --- layout: sticky TOC rail + main column --- */
+
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
+}
+
+.toc {
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  font-size: 13px;
+}
+.toc-head {
+  margin: 0 0 8px;
+  font-variant-caps: small-caps;
+  letter-spacing: .08em;
+  font-size: 12px;
+  color: var(--muted);
+}
+.toc ul { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 0 0 7px; line-height: 1.35; }
+.toc a {
+  color: var(--muted);
+  text-decoration: none;
+  font-variant-caps: small-caps;
+  letter-spacing: .04em;
+}
+.toc a:hover { color: var(--accent); }
+
+/* --- sections --- */
+
+main { min-width: 0; }
+main > section { border-top: 1px solid var(--rule); padding: 36px 0 28px; }
+main > section:first-child { border-top: 0; padding-top: 0; }
+section[id] { scroll-margin-top: 16px; }
+
+.kicker {
+  margin: 0 0 2px;
+  font-variant-caps: small-caps;
+  letter-spacing: .08em;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+main p, main ul, main ol, main blockquote { max-width: 68ch; }
+blockquote {
+  margin: 16px 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--rule);
+  color: var(--muted);
+}
+hr { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; }
+.empty { color: var(--muted); }
+
+/* grey context paragraph: prompt-section notes, metric fallback notes */
+.note { color: var(--muted); font-size: 13.5px; max-width: 68ch; }
+
+/* --- data-status strip: paper vs test/exploratory pools (SITE.md — the whole point) ---
+   A small factual band under the intro. Oxblood kicker, one plainspoken line, three
+   counts. No box: a hairline top rule keeps it in the document, not a card. */
+.data-status { border-top: 1px solid var(--rule); padding: 20px 0 22px; }
+.data-status-line { margin: 2px 0 0; max-width: 68ch; font-size: 14px; }
+.data-status-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+.data-status-counts li { display: flex; align-items: baseline; gap: 7px; }
+.dsc-n {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+  font-weight: 600;
+}
+.dsc-label {
+  font-variant-caps: small-caps;
+  letter-spacing: .06em;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* paper-pool provenance stamp: one oxblood-tinted line per results area, so no
+   reader mistakes a figure for more data than the 30-episode paper pool holds */
+.paper-note {
+  margin: 8px 0 0;
+  max-width: 68ch;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+/* the 'Test & calibration (not paper results)' divider in the coverage section */
+.test-subhead { margin-top: 40px; }
+
+/* small-caps group header: tile-grid groups (SITE.md item 4b), prompt groups */
+.group-head {
+  margin: 30px 0 8px;
+  font-variant-caps: small-caps;
+  letter-spacing: .08em;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* --- tile grids (SITE.md item 4b, colah.github.io layout): image-first tiles ---
+   Thumbnail above, title, one-line subtitle, status line; real anchors; hairline
+   borders, square corners. The hover border is an enhancement, not information. */
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin: 14px 0 10px;
+  max-width: 900px;
+}
+.tile {
+  position: relative; /* positioning context for the stretched .tile-link */
+  border: 1px solid var(--rule);
+  padding: 14px;
+  min-width: 0;
+}
+.tile:hover, .tile:focus-within { border-color: var(--accent); }
+.tile-link { color: inherit; text-decoration: none; }
+/* stretch the primary link over the whole tile without nesting the status line's
+   question-tag links inside it (nested anchors are invalid HTML) */
+.tile-link::after { content: ""; position: absolute; inset: 0; }
+.tile-status a { position: relative; z-index: 1; }
+.tile-thumb { display: block; margin: 0 0 10px; }
+.tile-thumb svg { display: block; width: 100%; height: auto; }
+.tile-kicker {
+  display: block;
+  font-variant-caps: small-caps;
+  letter-spacing: .06em;
+  font-size: 14px;
+  font-weight: 600;
+}
+.tile-title { display: block; font-size: 15px; font-weight: 600; line-height: 1.3; }
+.tile-sub { display: block; margin-top: 3px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.tile-status {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --- tables: horizontal hairlines only, numbers right-aligned monospace --- */
+
+.table-wrap { overflow-x: auto; max-width: 900px; margin: 14px 0 10px; }
+table { border-collapse: collapse; font-size: 14.5px; }
+th, td {
+  padding: 5px 18px 5px 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: baseline;
+}
+th:last-child, td:last-child { padding-right: 0; }
+thead th {
+  font-variant-caps: small-caps;
+  letter-spacing: .06em;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+th.num, td.num { text-align: right; }
+/* second line inside a header cell: the plainspoken gloss under 'extraction' */
+.th-sub {
+  display: block;
+  font-variant-caps: normal;
+  letter-spacing: 0;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 11px;
+}
+td.num, td.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+/* coverage proportion bar: flat, square, oxblood fill */
+.bar { width: 120px; height: 8px; background: #eee; }
+.bar > div { height: 8px; background: var(--accent); }
+
+/* footnote line under a table */
+.table-note { margin: 4px 0 0; font-size: 12.5px; color: var(--muted); max-width: 68ch; }
+
+/* --- figures (SVG inlined by render.py so marks are addressable) --- */
+
+figure { margin: 18px 0 8px; max-width: 900px; }
+figure img, figure svg { display: block; max-width: 100%; height: auto; }
+figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); max-width: 68ch; }
+
+/* per-figure text, typeset in page HTML from fig-meta.json — never inside the SVG
+   (SITE.md item 4, rev. 2026-07-03b): finding title above the SVG, how-to-read
+   sentence directly under it, fine print in the figcaption. Plain paragraphs, so
+   they print as-is. */
+.fig-finding {
+  margin: 14px 0 2px;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+  max-width: 68ch;
+}
+.fig-finding + figure { margin-top: 0; } /* keep the 2px finding-to-figure gap real */
+.fig-howto {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  color: #555;
+  max-width: 68ch;
+}
+
+/* evidence links: fig-links.js adds .fig-link to gid-tagged marks ("ep:<id>[:t:<i>]")
+   and sends clicks to the reader. Enhancement only — the mark itself is unchanged
+   without JS and in print. */
+figure svg .fig-link { cursor: pointer; }
+figure svg .fig-link:hover { stroke: var(--accent); opacity: .75; }
+
+/* whole-figure click -> per-question detail page (fig/qN.html). A real anchor, so
+   it works without JS; the hover outline is an enhancement, not information — the
+   .fig-hint line below the caption states both affordances in plain text. */
+a.fig-more { display: block; color: inherit; text-decoration: none; }
+a.fig-more:hover, a.fig-more:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+.fig-hint {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* --- figure detail pages (fig/qN.html): one dense printable column --- */
+
+.detail-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 24px 80px;
+}
+.detail-main figure { max-width: none; }
+.detail-main figure svg { width: 100%; height: auto; }
+
+/* stats block: definition list of summary.questions.qN, dotted keys, mono values */
+dl.stats { max-width: 900px; margin: 14px 0 0; }
+dl.stats > div {
+  display: grid;
+  grid-template-columns: minmax(200px, 340px) 1fr;
+  gap: 0 18px;
+  border-bottom: 1px solid var(--rule);
+  padding: 4px 0;
+}
+dl.stats dt { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+dl.stats dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+.downloads { font-size: 13px; }
+
+/* --- margin notes (Tufte): authored as raw HTML in content markdown ---
+   Wide screens: floated into the right margin beside the 68ch text column.
+   Narrow screens and print: a small indented inline block. */
+.marginnote {
+  display: block;
+  margin: 10px 0 10px 24px;
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+  max-width: 48ch;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+@media (min-width: 1150px) {
+  .marginnote {
+    float: right;
+    clear: right;
+    width: 200px;
+    margin: 2px -224px 10px 16px;
+    padding-left: 0;
+    border-left: 0;
+    max-width: none;
+  }
+}
+
+/* --- transcript excerpts: monospace quote block, oxblood hairline --- */
+.excerpt {
+  max-width: 68ch;
+  margin: 16px 0;
+  padding: 2px 0 2px 14px;
+  border-left: 1px solid var(--accent);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.excerpt p { margin: 8px 0; }
+.excerpt p:first-child { margin-top: 0; }
+.excerpt p:last-child { margin-bottom: 0; }
+.excerpt-cite {
+  margin-top: 6px;
+  font-family: var(--serif);
+  font-variant-caps: small-caps;
+  letter-spacing: .06em;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: normal;
+}
+
+/* --- small screens: TOC becomes a static block above the text --- */
+
+@media (max-width: 880px) {
+  .layout { display: block; }
+  .toc {
+    position: static;
+    max-height: none;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 16px;
+  }
+}
+
+/* --- print --- */
+
+@media print {
+  .toc, .top-nav, .fig-hint { display: none; }
+  .layout { display: block; padding: 0; max-width: none; }
+  /* tiles print as a stacked list: no grid, hairline separators instead of boxes */
+  .tile-grid { display: block; }
+  .tile { border: 0; border-top: 1px solid var(--rule); padding: 10px 0; }
+  .masthead { padding-top: 0; }
+  .masthead-inner { max-width: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  body { font-size: 12px; }
+  /* margin notes go back inline on paper, whatever the page-box width */
+  .marginnote {
+    float: none;
+    width: auto;
+    max-width: 48ch;
+    margin: 10px 0 10px 24px;
+    padding-left: 12px;
+    border-left: 1px solid var(--rule);
+  }
+}

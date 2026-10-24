@@ -1,0 +1,17 @@
+# Experiment 4 — attack, complete graph: each principal as persuader vs 4x glm-5.2 crowd.
+# Paired with 05 (messages off); the floor-contrast (04 - 05) is the pre-declared primary endpoint.
+# Models: the two above-floor principals + qwen as a sign-flip negative control.
+# Expectation (pre-declared): with messaging on, the focal captures MORE than in the messages-off
+# arm (05) — the 04-05 floor-contrast earns the persuasion claim, not the pooled net-capture null.
+log_dir: logs/04_attack_complete
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 90  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: attack_complete
+    task: focal_attack
+    models: [opus-4.8, gpt-5.5, qwen3.7-max]
+    reps: 30
+    topologies: [complete]
+    background: glm-5.2

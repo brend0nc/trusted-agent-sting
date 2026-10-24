@@ -1,0 +1,98 @@
+{% extends "base.html.j2" %}
+{# Per-figure detail page, written to fig/qN.html — everything server-rendered.
+   Rendered with root="../": all site-root links (static/, data/, episodes.html)
+   are prefixed by base.html.j2 / render.py accordingly. #}
+
+{% block title %}Q{{ q.number }} &middot; {{ q.title }} — Delegated Influence{% endblock %}
+
+{% block head %}<script src="{{ root }}static/fig-links.js" defer></script>{% endblock %}
+
+{% block content %}
+<main class="detail-main">
+
+<section id="figure">
+  <p class="kicker">Question {{ q.number }}</p>
+  <h2>{{ q.title }}</h2>
+  {# finding above the SVG, how-to-read under it, fine print + decode caption in
+     the figcaption — all typeset here, never inside the SVG (SITE.md item 4). #}
+  {% if q.figure_svg %}
+  {% if q.finding %}<p class="fig-finding">{{ q.finding }}</p>{% endif %}
+  <figure>
+    {{ q.figure_svg | safe }}
+    {% if q.howto %}<p class="fig-howto">{{ q.howto }}</p>{% endif %}
+    {% if q.caption %}<figcaption>{{ q.caption }}</figcaption>{% endif %}
+  </figure>
+  {% else %}
+  <p class="empty">&mdash; no figure rendered for this question yet.</p>
+  {% endif %}
+</section>
+
+<section id="how-to-read">
+  <h3>Evidence links</h3>
+  <p>Every mark is backed by a transcript: marks deep-link to the episode behind
+    them, so clicking a mark opens the transcript reader at that episode&rsquo;s
+    event. The same episodes are listed in the table below.</p>
+</section>
+
+<section id="reading">
+  <h3>Reading</h3>
+  {{ q.html | safe }}
+</section>
+
+<section id="stats">
+  <h3>Statistics</h3>
+  {% if stats %}
+  <dl class="stats">
+    {% for row in stats %}
+    <div><dt>{{ row.key }}</dt><dd>{{ row.value }}</dd></div>
+    {% endfor %}
+  </dl>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+  <p class="table-note">summary.questions.q{{ q.number }} rendered verbatim;
+    missing values shown as &mdash;.</p>
+</section>
+
+<section id="episodes">
+  <h3>Episodes</h3>
+  {% if episodes %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>episode</th><th>condition</th><th>focal model</th>
+          <th class="num">capture (by focal)</th><th class="num">cascades</th><th class="num">gini</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in episodes %}
+        <tr>
+          <td class="mono">{% if r.href %}<a href="{{ r.href }}">{{ r.id }}</a>{% else %}{{ r.id }}{% endif %}</td>
+          <td class="mono">{{ r.condition }}</td>
+          <td class="mono">{{ r.model }}</td>
+          <td class="num">{{ r.by_focal }}</td>
+          <td class="num">{{ r.cascades }}</td>
+          <td class="num">{{ r.gini }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">All episodes measured so far ({{ episodes | length }}),
+    sorted by condition then id; episode links open the transcript reader.</p>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+<section id="downloads">
+  <h3>Downloads</h3>
+  <p class="downloads mono">
+    <a href="q{{ q.number }}.svg">q{{ q.number }}.svg</a> &middot;
+    <a href="../data/summary.json">summary.json</a>
+  </p>
+</section>
+
+</main>
+{% endblock %}

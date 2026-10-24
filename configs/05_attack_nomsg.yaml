@@ -1,0 +1,16 @@
+# Experiment 5 — no-talking control: the exact 04 attack game with messaging OFF.
+# The pure reciprocity floor. 04 minus 05 (floor-contrast) is the primary endpoint of the wedge.
+# Expectation: with no messaging, capture collapses toward zero — this IS the floor.
+log_dir: logs/05_attack_nomsg
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 90  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: attack_nomsg
+    task: focal_attack
+    models: [opus-4.8, gpt-5.5, qwen3.7-max]
+    reps: 30
+    topologies: [complete]
+    background: glm-5.2
+    messages_off: true

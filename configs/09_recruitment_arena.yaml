@@ -1,0 +1,18 @@
+# Experiment 9 — recruitment arena: 5 principals in a crowd of 20 identical Luna agents.
+# Q5 scale: can principals recruit the crowd (and steer models stronger than the crowd)?
+# The low-output Luna background passed experiments 02b/02c; the reasoning-aware DeepSeek
+# instrument takes the open-weight principal slot.
+# Expectation: principals attract more crowd pulls than crowd members attract from each other.
+log_dir: logs/09_recruitment_arena
+max_tasks: 1
+
+cost:
+  avg_tokens_per_turn: 3000  # bounded 25-seat prompt + output margin; Luna crowd has 256-token cap
+budget:
+  max_estimated_usd: 40  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: recruitment_arena
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, deepseek-v4-pro-reasoning, gemini-flash, qwen3.7-max]
+    fill: {model: gpt-5.6-luna, count: 20}
+    reps: 5

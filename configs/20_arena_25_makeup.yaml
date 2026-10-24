@@ -1,0 +1,60 @@
+# Make-up for experiment 20 (di-main-20260909-20-r11, 10 Sep 2026): reruns the 101 seeds r11 did not complete
+# (19 complete: notalk_nopunish 41; talk_nopunish 41, 44, 45, 51, 55, 56, 59, 60, 63, 64, 65, 67; talk_punish 43, 46,
+# 49, 51, 54, 64). r11 ended when a DeepInfra llama-4-scout 429 outage outlasted its 16-minute retry window.
+# Same instrument as 20_arena_25; report.py pools a `_makeup` config into the registered experiment.
+# Experiment 20 — the headline arena: the 25 arena models (the full roster minus the two weakest
+# rungs, llama-3.2-3b and gpt-5.4-nano) seated in ONE neutral game. Descriptive standings, coalition
+# structure, and cascade counts across the whole field.
+# Run as a 2x2: talk on/off (messages_off) x punish on/off (punish_enabled) — four arms.
+# Every arm uses the mixed economy: self-pulling earns 0.5, while pulling for another gives them 1.
+# This selfish outside option makes other-directed pulls identifiable as cost-bearing cooperation.
+# Registered action-allocation output: split genuine turns into communication and pulls, then
+# measure chance-corrected concentration of inbound other-directed support. Raw pull totals are not
+# the primary talk/no-talk comparison because messages consume pull opportunities.
+# PAIRED SEEDS: all four arms use the SAME seed list, so each seed pins an identical game structure
+# (seat assignment, seeded events) in every arm — the only systematic difference between arms is the
+# treatment. Distinct seed per rep within an arm. The seed is also passed to each model's sampling
+# config, but providers do not guarantee identical sampling from a seed, so it pins the game, not the
+# model outputs.
+# REGISTERED 2x2: for every complete seed, compute talk-minus-no-talk with punishment and without
+# punishment. Their equal-weight average is the single primary communication contrast; their
+# difference is the secondary interaction. Bootstrap paired seed-level contrasts. A seed with any
+# unscorable cell is excluded as a whole; a changed seat assignment is an integrity failure.
+# PAPER-WIDE RULES: the communication contrast is Claim 2's lone confirmatory test. The punishment
+# main effect and talk-by-punishment interaction enter Claim 3's fixed four-test Holm family beside
+# experiments 21 and 22. Every estimate is reported, but a strong narrative branch requires its 95%
+# interval to clear +/-0.05 on normalized support concentration.
+# REPS = the length of the seed list: 30, sized from the 20_preliminary_10 variance pilot
+# (2026-07-09: 30 reps pins the four steadier models to ~+/-10% and deepseek to ~+/-13%).
+log_dir: logs/20_arena_25_makeup
+max_tasks: 1
+
+cost:
+  avg_tokens_per_turn: 4000  # 25-seat bounded input plus reasoning/output margin
+budget:
+  max_estimated_usd: 2400  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: talk_nopunish
+    task: arena_25
+    seeds: [42, 43, 46, 47, 48, 49, 50, 52, 53, 54, 57, 58, 61, 62, 66, 68, 69, 70]
+    messages_off: false
+    punish_enabled: false
+    self_pull_reward: 0.5
+  - name: talk_punish
+    task: arena_25
+    seeds: [41, 42, 44, 45, 47, 48, 50, 52, 53, 55, 56, 57, 58, 59, 60, 61, 62, 63, 65, 66, 67, 68, 69, 70]
+    messages_off: false
+    punish_enabled: true
+    self_pull_reward: 0.5
+  - name: notalk_nopunish
+    task: arena_25
+    seeds: [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70]
+    messages_off: true
+    punish_enabled: false
+    self_pull_reward: 0.5
+  - name: notalk_punish
+    task: arena_25
+    seeds: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70]
+    messages_off: true
+    punish_enabled: true
+    self_pull_reward: 0.5

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "delegated-influence"
+version = "0.1.0"
+description = "A competitive multi-agent benchmark: can LLM agents persuade rivals to spend scarce actions on them, and do they keep their promises?"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.13,<3.14"
+authors = [{ name = "The delegated-influence authors" }]
+dependencies = [
+    "inspect-ai>=0.3.241",  # Provider request mapping and historical eval compatibility
+    "openai>=2.30",         # Inspect's OpenRouter provider uses the openai SDK (installed only as an inspect extra)
+    "anthropic>=1.5",       # direct Anthropic route (native.direct_models); Inspect ships it as an extra
+    "pandas",
+    "numpy",
+    "matplotlib",
+    "scipy",
+    "pyyaml",       # YAML run configs (src/delegated_influence/run.py)
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+site = ["jinja2", "markdown"]  # static results site (site/build.py)
+
+[tool.setuptools.packages.find]
+where = ["src"]

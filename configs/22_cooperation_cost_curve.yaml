@@ -1,0 +1,54 @@
+# Experiment 22 — cooperation cost curve.
+# Five principal models play the same ten-round society under five values of the selfish action.
+# The pure arm offers no scoring self-pull. Mixed arms make helping another increasingly costly.
+# Every arm uses the same model roster, seating shuffle key, game seed sequence, messages-on setting,
+# and no punishment. This isolates the value of the selfish alternative.
+# Author question: when helping oneself becomes more valuable, which models still choose to help
+# others, and do the apparent cooperation ordering and coalition patterns change?
+# REGISTERED PRIMARY: within every seed with all four scoreable mixed arms, fit the cooperation-rate
+# slope over self rewards 0.25/0.5/0.75/1.0; average and bootstrap those seed slopes. The 0 arm is a
+# matched partner-choice baseline only and never enters the cooperation calculation. Adjacent steps
+# and endpoint model ranks are descriptive. Five per-model slopes are secondary and BH-corrected.
+# A missing/unscorable mixed cell removes the whole seed; duplicate cells or changed seating error.
+# The population slope is one member of Claim 3's fixed four-test Holm family. For paper-level
+# materiality, convert the slope to the change across reward 0.25->1.0; the 95% interval must clear
+# +/-0.05. Model-specific BH results remain a separate secondary family.
+stage: confirmatory
+log_dir: logs/22_cooperation_cost_curve
+max_tasks: 1
+
+cost:
+  avg_tokens_per_turn: 2500
+budget:
+  max_estimated_usd: 600  # retry-aware planning ceiling; never cuts off an episode mid-run
+arms:
+  - name: pure_0
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30
+    rounds: 10
+    self_pull_reward: 0
+  - name: selfish_025
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30
+    rounds: 10
+    self_pull_reward: 0.25
+  - name: selfish_050
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30
+    rounds: 10
+    self_pull_reward: 0.5
+  - name: selfish_075
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30
+    rounds: 10
+    self_pull_reward: 0.75
+  - name: selfish_100
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30
+    rounds: 10
+    self_pull_reward: 1.0

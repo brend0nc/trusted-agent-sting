@@ -1,0 +1,13 @@
+# Experiment 3 — five principals: the 5 models we care about, all playing each other.
+# Small and cheap -> run many times for tight error bars (Q1 persuasion, Q3 leaderboard, Q6 strategies).
+# Expectation: at 30 reps, capture differences between the five principals exceed their error bars.
+log_dir: logs/03_five_principals
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 30  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: five_principals
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    reps: 30

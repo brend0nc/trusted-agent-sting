@@ -1,0 +1,19 @@
+# Experiment 13b — declared intents attached to the ATTACK setup: the per-decision persuasion
+# measure where the wedge already showed capture. Same three models as 04, vs the glm crowd.
+# Expectation: the plan-departure gap (toward messagers minus others) turns POSITIVE for the
+# models whose talk gain was real (gpt-5.5, qwen); exp 13 showed it ~zero in polite play.
+# Caveats as exp 13: persuaded-vs-good-proposal unidentifiable; cross-round leak; reactivity
+# checked against exp 04.
+log_dir: logs/13b_attack_intents
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 66  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: attack_intents
+    task: focal_attack
+    models: [opus-4.8, gpt-5.5, qwen3.7-max]
+    reps: 20
+    topologies: [complete]
+    declared_intents: true
+    background: glm-5.2

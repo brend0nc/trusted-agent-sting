@@ -1,0 +1,13 @@
+# Experiment 10 — family ladder: one family head-to-head, weakest to strongest.
+# Q4 capability effects with zero provider confound (ids verified live 2026-07-03).
+# Expectation: within one family, capture does NOT rise monotonically with capability.
+log_dir: logs/10_family_ladder
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 24  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: family_ladder
+    task: lineup
+    seats: [sonnet-4.6, sonnet-5, opus-4.6, opus-4.7, opus-4.8, fable-5]
+    reps: 20

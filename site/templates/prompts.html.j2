@@ -1,0 +1,37 @@
+{% extends "base.html.j2" %}
+{# Prompts page, written to prompts.html at the site root — the exact text the
+   agents play under, rendered by derive.py from the live source modules into
+   data/prompts.json. Grouped: System prompts / The turn message / Judges. #}
+
+{% block title %}Prompts — what the agents see — Delegated Influence{% endblock %}
+
+{% block content %}
+<main class="detail-main">
+
+<section id="prompts">
+  <p class="kicker">What the agents see</p>
+  <h2>Prompts</h2>
+  <p>The exact text the agents play under &mdash; system prompts, the per-turn
+    observation, and the post-hoc judge instructions &mdash; rendered from the live
+    source modules at build time, so this page cannot drift from the code.</p>
+
+  {% if prompts and prompts.groups %}
+  {% for g in prompts.groups %}
+  <h3 class="group-head">{{ g.label }}</h3>
+  {% for s in g.sections %}
+  <h4{% if s.id %} id="{{ s.id }}"{% endif %}>{{ s.title }}</h4>
+  {% if s.note %}<p class="note">{{ s.note }}</p>{% endif %}
+  <div class="excerpt">{{ s.text }}</div>
+  {% endfor %}
+  {% endfor %}
+  <p class="table-note">generated from commit
+    <span class="mono">{{ prompts.commit }}</span> at build time{% if prompts.dirty %},
+    working tree dirty{% endif %}.</p>
+  {% else %}
+  <p class="empty">&mdash; no prompt data yet
+    (<span class="mono">data/prompts.json</span> not built).</p>
+  {% endif %}
+</section>
+
+</main>
+{% endblock %}

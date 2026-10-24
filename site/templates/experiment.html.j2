@@ -1,0 +1,76 @@
+{% extends "base.html.j2" %}
+{# Per-experiment detail page, written to experiments/<id>.html — rendered with
+   root="../" like the fig/qN.html pages, so masthead and asset links resolve. #}
+
+{% block title %}{{ e.name }} &middot; experiment — Delegated Influence{% endblock %}
+
+{% block head %}<script src="{{ root }}static/fig-links.js" defer></script>{% endblock %}
+
+{% block content %}
+<main class="detail-main">
+
+<section id="experiment">
+  <p class="kicker">Experiment</p>
+  <h2>{{ e.name }}</h2>
+  <p>{{ e.description }}</p>
+  <dl class="stats">
+    <div><dt>status</dt><dd>{{ e.status }}</dd></div>
+    <div><dt>coverage</dt><dd>{{ e.status_line }}</dd></div>
+    <div><dt>conditions</dt><dd>{{ e.conditions }}</dd></div>
+    {% if e.questions %}
+    <div><dt>questions</dt><dd>
+      {%- for q in e.questions %}<a href="{{ root }}index.html#{{ q }}">{{ q }}</a>{% if not loop.last %} &middot; {% endif %}{% endfor -%}
+    </dd></div>
+    {% endif %}
+    {% if e.config %}<div><dt>config</dt><dd>{{ e.config }}</dd></div>{% endif %}
+  </dl>
+</section>
+
+{% if e.svg %}
+<section id="figure">
+  {% if e.finding %}<p class="fig-finding">{{ e.finding }}</p>{% endif %}
+  <figure>
+    {{ e.svg | safe }}
+    {% if e.howto %}<p class="fig-howto">{{ e.howto }}</p>{% endif %}
+    {% if e.fineprint %}<figcaption>{{ e.fineprint }}</figcaption>{% endif %}
+  </figure>
+</section>
+{% endif %}
+
+<section id="episodes">
+  <h3>Episodes</h3>
+  {% if episodes %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>episode</th><th>condition</th><th>focal model</th>
+          <th class="num">capture (by focal)</th><th class="num">cascades</th><th class="num">gini</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in episodes %}
+        <tr>
+          <td class="mono">{% if r.href %}<a href="{{ r.href }}">{{ r.id }}</a>{% else %}{{ r.id }}{% endif %}</td>
+          <td class="mono">{{ r.condition }}</td>
+          <td class="mono">{{ r.model }}</td>
+          <td class="num">{{ r.by_focal }}</td>
+          <td class="num">{{ r.cascades }}</td>
+          <td class="num">{{ r.gini }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">{{ episodes | length }} episode{{ 's' if episodes | length != 1 }},
+    sorted by condition then id; episode links open the transcript reader.</p>
+  {% elif e.config %}
+  <p class="empty">No episodes yet &mdash; launch with:</p>
+  <pre><code>uv run python -m delegated_influence.run {{ e.config }}</code></pre>
+  {% else %}
+  <p class="empty">No episodes recorded for this entry.</p>
+  {% endif %}
+</section>
+
+</main>
+{% endblock %}

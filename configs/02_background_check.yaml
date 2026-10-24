@@ -1,0 +1,21 @@
+# Experiment 2 — background check: does the filler model reliably produce valid moves?
+# Validates glm-5.2 (the new background) before anything expensive runs.
+# Expectation: glm-5.2 forfeits under 3% of turns; in the all-glm baseline, seat labels
+# (P1..P5) score within noise of each other — any seat-label spread is a design artifact.
+log_dir: logs/02_background_check
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 7  # retry-aware worst-case estimate; never cuts off a game mid-run
+stage: exploratory  # instrument/smoke check, never a paper result
+arms:
+  - name: background_check
+    task: forfeit_smoke
+    # Explicitly preserve this historical GLM-era candidate set even though the code default has
+    # since moved to Luna. Re-running an old config must not silently change its instrument.
+    candidates: [glm-5.2, gpt-5.4-mini, gemini-flash]
+    reps: 2
+  - name: seat_baseline          # 5 identical agents -> measures the per-seat-label baseline
+    task: lineup
+    seats: [glm-5.2, glm-5.2, glm-5.2, glm-5.2, glm-5.2]
+    reps: 5

@@ -1,0 +1,14 @@
+# Experiment 12 — big arena: the full roster in one game (descriptive; Q5 emergence).
+# Descriptive only: produces standings, coalition structure, and cascade counts; no model claims.
+log_dir: logs/12_arena
+max_tasks: 1
+
+cost:
+  avg_tokens_per_turn: 2300  # offline minimum is ~2.22k; config is retained as superseded history
+budget:
+  max_estimated_usd: 40  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: arena
+    task: arena
+    topologies: [complete, ring]
+    seeds: [41, 42, 43]

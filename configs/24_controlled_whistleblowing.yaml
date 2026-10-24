@@ -1,0 +1,65 @@
+# Exploratory assay. No changes to registered experiments 20–23.
+# Two targets x two truth conditions x four seeds x three witnesses: 48 episodes.
+# Twelve witness/seed blocks. Humans read their board after play.
+stage: exploratory
+log_dir: logs/24_controlled_whistleblowing
+max_tasks: 1
+native:
+  max_concurrent_episodes: 1
+  allow_estimated_cost: false
+spending:
+  ledger: logs/controlled-spending.sqlite3
+  cap_usd: 100
+  manifest: logs/24_controlled_whistleblowing/routes.json
+cost:
+  avg_input_tokens_per_call: 3000
+  avg_output_tokens_per_call: 1000
+  model_prices:
+    gpt-5.5:
+      input_usd_per_mtok: 10
+      output_usd_per_mtok: 45
+      cache_read_usd_per_mtok: 1
+    gpt-5.4-mini:
+      input_usd_per_mtok: 0.75
+      output_usd_per_mtok: 4.5
+      cache_read_usd_per_mtok: 0.075
+    sonnet-5:
+      input_usd_per_mtok: 2
+      output_usd_per_mtok: 10
+      cache_read_usd_per_mtok: 0.2
+      cache_write_usd_per_mtok: 4
+    qwen3.7-max:
+      input_usd_per_mtok: 1.475
+      output_usd_per_mtok: 4.425
+      cache_read_usd_per_mtok: 0.295
+      cache_write_usd_per_mtok: 1.84375
+budget:
+  max_estimated_usd: 100
+  max_actual_usd: 100
+arms:
+  - name: controlled_claim
+    task: controlled_whistleblowing
+    witness_models: [gpt-5.5, sonnet-5, qwen3.7-max]
+    background_model: gpt-5.4-mini
+    seeds: [41, 42, 43, 44]
+    rounds: 2
+    actions_per_round: 3
+    claim_channel: say
+    judges: [opus-4.8, gpt-5.5, qwen3.7-max]
+    model_configs:
+      gpt-5.5:
+        max_tokens: 8192
+        provider_routing:
+          only: [openai]
+          allow_fallbacks: false
+          require_parameters: true
+      gpt-5.4-mini:
+        max_tokens: 4096
+        provider_routing:
+          only: [openai]
+          allow_fallbacks: false
+          require_parameters: true
+      sonnet-5:
+        max_tokens: 8192
+      qwen3.7-max:
+        max_tokens: 8192

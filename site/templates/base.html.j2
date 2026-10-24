@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+{# `root` is the relative prefix back to the site root: "" for top-level pages,
+   "../" for the figure detail pages under fig/. fig-links.js reads it from
+   <body data-root> to build reader deep links that resolve from either depth. #}
+{% set R = root | default('') %}
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{% block title %}Delegated Influence{% endblock %}</title>
+<link rel="stylesheet" href="{{ R }}static/site.css">
+{% block head %}{% endblock %}
+</head>
+<body data-root="{{ R }}">
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="project-title"><a href="{{ R }}index.html">Delegated Influence</a></p>
+    <p class="project-desc">Historical results archive for the early persuasion-first experiments.</p>
+    <p class="meta-line"><span class="mono">{{ meta.commit }}</span> &middot;
+      generated {{ meta.generated }} &middot;
+      {{ meta.n_episodes }} episodes &middot;
+      <em>private draft &mdash; not for citation</em></p>
+    <nav class="top-nav">
+      <a href="{{ R }}index.html">Overview</a>
+      <a href="{{ R }}episodes.html">Episodes</a>
+      <a href="{{ R }}prompts.html">Prompts</a>
+      <a href="{{ R }}pilot.html">Pilot &amp; test data</a>
+    </nav>
+  </div>
+</header>
+<aside class="archive-notice">
+  <strong>Historical metrics.</strong> This site preserves completed-run results under their
+  original analysis. Its older uses of “cooperation” and “coalition” are not the current paper
+  definitions. The canonical contract is <span class="mono">wiki/pages/entities/metrics.md</span>.
+</aside>
+{% block content %}{% endblock %}
+</body>
+</html>

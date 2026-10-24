@@ -1,0 +1,15 @@
+# Experiment 1 — pipeline smoke: two models, one tiny game, to prove the machinery works.
+#   uv run python -m delegated_influence.run configs/01_smoke.yaml --dry-run
+#   uv run python -m delegated_influence.run configs/01_smoke.yaml
+log_dir: logs/01_smoke
+max_tasks: 2
+stage: exploratory  # instrument/smoke check, never a paper result
+budget:
+  max_estimated_usd: 2  # pre-launch estimate ceiling; this never cuts off a game mid-run
+arms:
+  - name: smoke_attack
+    task: focal_attack
+    models: [gpt-5.4-mini, opus-4.8]
+    reps: 1
+    topologies: [complete]
+    background: glm-5.2

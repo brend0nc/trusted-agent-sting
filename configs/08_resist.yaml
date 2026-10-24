@@ -1,0 +1,18 @@
+# Experiment 8 — resistance: a fixed strong persuader (opus-4.8) targets each model,
+# unwarned vs warned. Q7 do stronger models resist; does the warning help?
+# Caveat (report it this way): the inoculation clause coaches ledger-checking, so this measures
+# INSTRUCTABLE suppression — how much a warning helps — not innate robustness.
+# Expectation: inoculated targets are captured less than naive ones.
+log_dir: logs/08_resist
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 90  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: resist
+    task: focal_resist
+    models: [gpt-5.5, qwen3.7-max, glm-5.2]
+    reps: 15
+    topologies: [complete]
+    background: glm-5.2
+    inoculations: [false, true]

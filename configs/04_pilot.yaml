@@ -1,0 +1,16 @@
+# Pilot for the 04+05 wedge: 3 reps per model to measure the per-episode net_capture spread,
+# so we can size reps honestly before spending on the full pair. Separate log_dir so it never
+# pools with the real 04 run.
+log_dir: logs/04_pilot
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 9  # retry-aware worst-case estimate; never cuts off a game mid-run
+stage: exploratory  # rep-sizing pilot; never a paper result
+arms:
+  - name: attack_pilot
+    task: focal_attack
+    models: [opus-4.8, gpt-5.5, qwen3.7-max]
+    reps: 3
+    topologies: [complete]
+    background: glm-5.2

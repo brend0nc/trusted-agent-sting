@@ -1,0 +1,19 @@
+# Experiment 7 — mixed economy: pulling your own lever pays 0.5.
+# Q6 act-vs-influence: do models still bother persuading when a safe self-serve option exists?
+# Ten agents (1 attacker + 9 background), 10 rounds — matches the 10-agent preliminary frame.
+# Expectation: weaker models take the safe self-pull more; stronger models keep trading.
+log_dir: logs/07_attack_mixed
+max_tasks: 2
+
+budget:
+  max_estimated_usd: 1620  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: attack_mixed
+    task: focal_attack
+    models: all
+    reps: 15
+    rounds: 10
+    topologies: [complete]
+    self_pull_reward: 0.5
+    background_seats: 9
+    background: glm-5.2

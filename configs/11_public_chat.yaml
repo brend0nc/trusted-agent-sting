@@ -1,0 +1,20 @@
+# Experiment 11 — public chat: five principals + a five-agent background crowd, plus an open
+# channel everyone can read. Ten agents, 10 rounds — matches the 10-agent preliminary frame.
+# Descriptive: we OBSERVE what agents use the channel for — posting rate, and whether they
+# spontaneously call out non-cooperators and punish promise-breakers. Whether this is MORE than
+# in a private-only game is a cross-experiment / transcript question, not baked into this arm.
+log_dir: logs/11_public_chat
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 120  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: public_chat
+    task: lineup
+    # Use the reasoning endpoint: the legacy deepseek-v4-pro alias exhausted its 1024-token cap
+    # on hidden reasoning and returned empty completions in earlier runs.
+    seats: [opus-4.8, gpt-5.5, deepseek-v4-pro-reasoning, gemini-flash, qwen3.7-max]
+    fill: {model: glm-5.2, count: 5}
+    public_chat: true
+    reps: 30
+    rounds: 10

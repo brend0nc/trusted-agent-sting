@@ -1,0 +1,18 @@
+# Small instrument check for the selected background in its real paper role:
+# one focal attacker + four Luna fillers. This is exploratory and tests valid actions,
+# responsiveness, reciprocity, and capture without repeating the oversized self-play bake-off.
+log_dir: logs/02c_luna_background_validation
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 1  # dry-run estimate plus 50% planning margin; never cuts off a game mid-run
+stage: exploratory
+arms:
+  - name: luna_background_validation
+    task: focal_attack
+    models: [gpt-5.5]
+    reps: 1
+    rounds: 5
+    actions_per_round: 3
+    topologies: [complete]
+    background: gpt-5.6-luna

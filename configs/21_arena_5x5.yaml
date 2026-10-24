@@ -1,0 +1,32 @@
+# Experiment 21 — 5x5 arena: 5 anonymous copies of each of the five principals (same models as
+# exp 03), seated in ONE neutral game = 25 seats. Copies are NOT told they are copies; seats are
+# anonymous, so this isolates model identity from field composition — every seat is one of five known
+# models. Descriptive (standings, coalitions, cascades).
+# One arm (talk on, punish off): the arena's own 2x2 lives in exp 20; this variant fixes the treatment
+# to keep the population snapshot and shakedown clean. Mixed economy matches exp 20: self-pulling
+# earns 0.5. Do not add a talk-off arm as a duplicate of historical 04/05. If experiment 20's
+# registered communication interval excludes zero, preregister a new contemporaneous five-by-five
+# talk-on/off follow-up; this one-arm run does not establish communication-effect generalization.
+# PAIRED SEEDS as exp 20: the seed pins the game structure and is passed to the models (providers do
+# not guarantee identical sampling). REPS = seed-list length: 30, sized from the
+# 20_preliminary_10 variance pilot (2026-07-09).
+# REGISTERED POPULATION CONTRAST: compare this arm with experiment 20 talk-on/no-punishment at the
+# episode level. For each complete shared seed, compute five-by-five minus diverse chance-corrected
+# support concentration and bootstrap seed differences. Never pair individual seats. Same-model
+# support above its 4/24 recipient-availability floor is a secondary mechanism measure.
+# The population contrast is one member of Claim 3's fixed four-test Holm family. It supports a
+# strong paper branch only when the adjusted test survives and its 95% interval lies beyond +/-0.05.
+log_dir: logs/21_arena_5x5
+max_tasks: 1
+
+cost:
+  avg_tokens_per_turn: 4000  # 25-seat bounded input plus reasoning/output margin
+budget:
+  max_estimated_usd: 600  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: five_by_five
+    task: arena_5x5
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    copies: 5
+    self_pull_reward: 0.5
+    seeds: [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70]

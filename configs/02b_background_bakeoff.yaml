@@ -1,0 +1,40 @@
+# Exploratory instrument check: choose a cheaper fixed background without changing paper results.
+# Two paired 10-agent episodes per arm match the final game's social scale and expose long-run
+# cooperation/coalition dynamics. No arm changes the global BACKGROUND until this bake-off passes.
+log_dir: logs/02b_background_bakeoff
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 24  # retry-aware worst-case estimate; never cuts off a game mid-run
+stage: exploratory
+arms:
+  - name: glm_baseline
+    task: lineup
+    seats: [glm-5.2, glm-5.2, glm-5.2, glm-5.2, glm-5.2,
+            glm-5.2, glm-5.2, glm-5.2, glm-5.2, glm-5.2]
+    reps: 2
+    rounds: 10
+    actions_per_round: 5
+    topologies: [complete]
+
+  - name: luna_none
+    task: lineup
+    seats: [gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna,
+            gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna]
+    model_configs:
+      gpt-5.6-luna: {reasoning_effort: none, max_tokens: 256}
+    reps: 2
+    rounds: 10
+    actions_per_round: 5
+    topologies: [complete]
+
+  - name: luna_low
+    task: lineup
+    seats: [gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna,
+            gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna, gpt-5.6-luna]
+    model_configs:
+      gpt-5.6-luna: {reasoning_effort: low, max_tokens: 512}
+    reps: 2
+    rounds: 10
+    actions_per_round: 5
+    topologies: [complete]

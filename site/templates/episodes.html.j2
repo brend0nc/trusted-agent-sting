@@ -1,0 +1,113 @@
+{% extends "base.html.j2" %}
+
+{% block title %}Episodes — transcript reader{% endblock %}
+
+{% block head %}{{ super() }}
+<link rel="stylesheet" href="static/reader.css">
+<script src="static/reader.js" defer></script>
+{% endblock %}
+
+{% block content %}
+<section class="reader">
+  <p class="kicker">transcript reader</p>
+  <p class="reader-lede">
+    Pick an episode to inspect each agent's actions, messages, scores, and recorded calls.
+    Both message boards are public. Their intended audience differs: agents or human reviewers.
+  </p>
+
+  <p id="reader-status" class="reader-status" role="status">Loading episode index&hellip;</p>
+
+  <noscript>
+    <p class="reader-status">The transcript reader requires JavaScript. The underlying
+    data is plain JSON: <span class="mono">data/episodes_index.json</span> lists
+    episodes and <span class="mono">data/episodes/&lt;id&gt;.json</span> holds each
+    transcript.</p>
+  </noscript>
+
+  <div id="picker" hidden>
+    <p class="picker-controls">
+      <label for="picker-select">episode</label>
+      <select id="picker-select"></select>
+    </p>
+    <details id="picker-details" open>
+      <summary>all episodes</summary>
+      <div class="table-scroll">
+        <table id="picker-table">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>run</th>
+              <th>condition</th>
+              <th>topology</th>
+              <th class="num">seed</th>
+              <th>focal model</th>
+              <th class="num">events</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <article id="episode" hidden>
+    <h2 id="ep-title" class="ep-title"></h2>
+    <p id="ep-cond" class="ep-cond"></p>
+
+    <div id="adv-strip" class="adv-strip" hidden>
+      <svg id="strip-svg" height="48" role="img"
+           aria-label="cumulative score per player over the event sequence"></svg>
+      <p class="strip-hint">j/k step &middot; shift+j/k round &middot; click strip to seek</p>
+    </div>
+
+    <div class="ep-filters" id="ep-filters">
+      <label><input type="checkbox" id="filter-messages" checked> messages</label>
+      <label><input type="checkbox" id="filter-pulls" checked> pulls</label>
+      <label><input type="checkbox" id="filter-broadcasts" checked> agent board</label>
+      <label><input type="checkbox" id="filter-human-board" checked> human board</label>
+      <label><input type="checkbox" id="filter-punishment" checked> punishment</label>
+      <label><input type="checkbox" id="filter-intents" checked> intents</label>
+      <div class="agent-controls">
+        <span id="seat-chips" class="seat-chips" aria-label="Select an agent"></span>
+        <label for="agent-view-mode">View</label>
+        <select id="agent-view-mode" disabled>
+          <option value="own">Own actions and plans</option>
+          <option value="received">Received + public</option>
+          <option value="involved">Involves this agent</option>
+        </select>
+      </div>
+      <p id="agent-view-note" class="reader-note">Select an agent. Select it again to show all agents.</p>
+    </div>
+
+    <div class="ep-columns">
+      <div class="feed-wrap">
+        <div id="gutter" class="gutter" hidden>
+          <p id="cascade-count" class="cascade-count"></p>
+          <svg id="cascade-svg" width="56" role="img"
+               aria-label="cascade chains: ask, relay, resulting pull"></svg>
+        </div>
+        <div id="feed" class="feed"></div>
+      </div>
+
+      <aside class="rail">
+        <section class="rail-block" id="agent-details" hidden></section>
+        <section class="rail-block">
+          <p class="kicker">seats</p>
+          <table id="rail-seats" class="rail-table"></table>
+        </section>
+        <section class="rail-block">
+          <p class="kicker" id="rail-scores-caption">running scores</p>
+          <table id="rail-scores" class="rail-table"></table>
+        </section>
+        <section class="rail-block">
+          <p class="kicker">pull ledger</p>
+          <p class="rail-note">rows pull for columns, through the reading position</p>
+          <div class="table-scroll">
+            <table id="rail-ledger" class="rail-table rail-ledger"></table>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </article>
+</section>
+{% endblock %}

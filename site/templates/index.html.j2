@@ -1,0 +1,309 @@
+{% extends "base.html.j2" %}
+
+{% block title %}Delegated Influence — Overview{% endblock %}
+
+{% block head %}<script src="static/fig-links.js" defer></script>{% endblock %}
+
+{% block content %}
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <p class="toc-head">Contents</p>
+  <ul>
+    {% for item in toc %}
+    <li><a href="#{{ item.id }}">{{ item.label }}</a></li>
+    {% endfor %}
+  </ul>
+</nav>
+
+<main>
+
+{% if intro %}
+<section id="intro">
+  <h2>{{ intro.title }}</h2>
+  {{ intro.html | safe }}
+</section>
+{% endif %}
+
+{% if data_status %}
+<section id="data-status" class="data-status">
+  <p class="kicker">Results status</p>
+  <p class="data-status-line">Results below are from confirmatory runs only
+    (<strong>{{ data_status.paper_n }} paper episodes</strong>, run:
+    <span class="mono">{{ data_status.paper_runs }}</span>). Test, smoke,
+    calibration, and held-out data ({{ data_status.test_n }} episodes) is kept
+    separate and never shown as a result.</p>
+  <ul class="data-status-counts">
+    <li><span class="dsc-n">{{ data_status.paper_n }}</span><span class="dsc-label">paper</span></li>
+    <li><span class="dsc-n">{{ data_status.in_progress_n }}</span><span class="dsc-label">in progress</span></li>
+    {% if data_status.has_held_out %}<li><span class="dsc-n">{{ data_status.held_out_n }}</span><span class="dsc-label">held out (exp-13 controls)</span></li>{% endif %}
+    <li><span class="dsc-n">{{ data_status.exploratory_n }}</span><span class="dsc-label">exploratory</span></li>
+  </ul>
+</section>
+{% endif %}
+
+{% if findings %}
+<section id="findings">
+  <p class="kicker">Findings</p>
+  <h2>At a glance</h2>
+  <p>One tile per question: the chart, its finding, its status. Each tile links to
+    the full reading, statistics, and the episodes behind it.</p>
+  {% if paper_note %}<p class="paper-note">{{ paper_note }}. Every result below is
+    computed from this pool only.</p>{% endif %}
+  <div class="tile-grid">
+    {% for t in findings %}
+    <div class="tile">
+      {% if t.svg %}<span class="tile-thumb">{{ t.svg | safe }}</span>{% endif %}
+      <a class="tile-link" href="{{ t.href }}"
+        ><span class="tile-kicker">Question {{ t.number }}</span></a>
+      {% if t.finding %}<span class="tile-sub">{{ t.finding }}</span>{% endif %}
+      <span class="tile-status">{{ t.status }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if experiment_groups or featured %}
+<section id="experiments">
+  <p class="kicker">Experiments</p>
+  <h2>Gallery</h2>
+  <p>Every run configuration, grouped by state. A tile links to the experiment&rsquo;s
+    detail page: full description, conditions, coverage, and its episodes.</p>
+  {% for g in experiment_groups %}
+  <h3 class="group-head">{{ g.label }}</h3>
+  <div class="tile-grid">
+    {% for e in g.tiles %}
+    <div class="tile">
+      {% if e.svg %}<span class="tile-thumb">{{ e.svg | safe }}</span>{% endif %}
+      <a class="tile-link" href="{{ e.href }}"><span class="tile-title">{{ e.name }}</span></a>
+      <span class="tile-sub">{{ e.blurb }}</span>
+      <span class="tile-status">{{ e.status_line }}{% if e.questions %} &middot;
+        {% for q in e.questions %}<a href="#{{ q }}">{{ q }}</a>{% if not loop.last %} {% endif %}{% endfor %}{% endif %}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  {% if featured %}
+  <h3 class="group-head">Featured episodes</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>episode</th><th>condition</th><th class="num">cascades</th><th>why look</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in featured %}
+        <tr>
+          <td class="mono"><a href="{{ r.href }}">{{ r.id }}</a></td>
+          <td class="mono">{{ r.condition }}</td>
+          <td class="num">{{ r.cascades }}</td>
+          <td>{{ r.why }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+<section id="project-state">
+  <p class="kicker">Project state</p>
+  <h2>Coverage</h2>
+  {% if coverage_groups %}
+  <p>Planned confirmatory experiments &mdash; the paper pool. Test, smoke, and
+    calibration runs live on the <a href="pilot.html">Pilot data</a> page and are
+    never shown as results.</p>
+  {% for g in coverage_groups if g.stage == 'confirmatory' %}
+  <h3 class="group-head">{{ g.label }}</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>config</th><th>arm</th><th>task</th><th>conditions</th><th>instrument</th>
+          <th>served provenance</th><th class="num">analysis / duplicates</th>
+          <th class="num">done / planned</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in g.rows %}
+        <tr>
+          <td class="mono">{{ r.config }}</td>
+          <td>{{ r.arm }}</td>
+          <td class="mono">{{ r.task }}</td>
+          <td>{{ r.conditions }}</td>
+          <td>{{ r.instrument }}</td>
+          <td>{{ r.provenance }}</td>
+          <td class="num">{{ r.analysis }} / {{ r.duplicates }}</td>
+          <td class="num">{{ r.done }} / {{ r.planned }}</td>
+          <td>{% if r.pct is not none %}<div class="bar"><div style="width: {{ r.pct }}%"></div></div>{% else %}&mdash;{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endfor %}
+  <p class="table-note">Historical means the prompt/observation instrument was recovered from
+    saved calls. A served-model mix blocks paper pooling; a provider mix is shown for audit.</p>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+
+  <p class="table-note">Pilot, smoke, and calibration runs &mdash; and the raw
+    provenance index of every <span class="mono">.eval</span> file &mdash; live on the
+    <a href="pilot.html">Pilot data</a> page.</p>
+</section>
+
+{% if methods %}
+<section id="methods">
+  <p class="kicker">Methods</p>
+  <h2>{{ methods.title }}</h2>
+  {{ methods.html | safe }}
+</section>
+{% endif %}
+
+{% for q in questions %}
+<section id="{{ q.id }}">
+  <p class="kicker">Question {{ q.number }}</p>
+  <h2>{{ q.title }}</h2>
+  {# figure first: finding above the SVG, how-to-read directly under it, fine
+     print in the figcaption (all from fig-meta.json — SITE.md item 4). Click
+     through: whole figure -> fig/qN.html detail page (real anchor, no JS
+     needed); individual marks -> episode deep links (fig-links.js). #}
+  {% if q.figure_svg %}
+  {% if q.finding %}<p class="fig-finding">{{ q.finding }}</p>{% endif %}
+  <figure>
+    {% if q.detail_href %}<a class="fig-more" href="{{ q.detail_href }}"
+       aria-label="Question {{ q.number }} — figure detail page"
+      >{{ q.figure_svg | safe }}</a>{% else %}{{ q.figure_svg | safe }}{% endif %}
+    {% if q.howto %}<p class="fig-howto">{{ q.howto }}</p>{% endif %}
+    <figcaption>
+      {% if q.caption %}{{ q.caption }}{% endif %}
+      {% if q.detail_href %}<span class="fig-hint">click a mark for its episode &middot; click the figure for detail</span>{% endif %}
+    </figcaption>
+  </figure>
+  {% endif %}
+  {{ q.html | safe }}
+</section>
+{% endfor %}
+
+{% if metrics %}
+<section id="metrics">
+  <p class="kicker">Metrics preview</p>
+  <h2>{{ metrics.title }}</h2>
+  {% if metrics.preamble %}{{ metrics.preamble | safe }}{% endif %}
+  {% if paper_note %}<p class="paper-note">{{ paper_note }}. Measured metrics below
+    come from this pool only.</p>{% endif %}
+  {% if metrics.pending %}
+  <p class="note">Hand-written readings for this section are pending
+    (<span class="mono">content/metrics.md</span>); the notes below come straight
+    from the derived data.</p>
+  {% endif %}
+  {# each metric: figure first (inlined so fig-links.js can wire its marks to the
+     reader) with its fig-meta.json text, then its prose. No fig-more wrapper —
+     these have no detail pages. #}
+  {% for m in metrics.figures %}
+  <h3 id="{{ m.id }}">{{ m.title }}</h3>
+  {% if m.svg %}
+  {% if m.finding %}<p class="fig-finding">{{ m.finding }}</p>{% endif %}
+  <figure>
+    {{ m.svg | safe }}
+    {% if m.howto %}<p class="fig-howto">{{ m.howto }}</p>{% endif %}
+    {% if m.fineprint %}<figcaption>{{ m.fineprint }}</figcaption>{% endif %}
+  </figure>
+  {% endif %}
+  {% if m.html %}{{ m.html | safe }}{% elif m.note %}<p class="note">{{ m.note }}</p>{% endif %}
+  {% endfor %}
+  {% for m in metrics.extra %}
+  <h3>{{ m.title }}</h3>
+  {{ m.html | safe }}
+  {% endfor %}
+</section>
+{% endif %}
+
+<section id="leaderboard">
+  <p class="kicker">Results</p>
+  <h2>Arena leaderboard</h2>
+  <p><strong>Extraction</strong> is the share of its rivals&rsquo; 25-action budget a
+    model won as pulls &mdash; 1.0 would mean every rival spent every action on it.
+    Models are ranked by extraction (95% episode-bootstrap CI); <span class="mono">points</span>
+    is the raw pulls received per episode.</p>
+  {% if paper_note %}<p class="paper-note">{{ paper_note }}. A 5-model arena, no attacker.</p>{% endif %}
+  {% if leaderboard %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="num">rank</th><th>model</th><th class="num">n</th>
+          <th class="num">extraction<br><span class="th-sub">share of rivals&rsquo; actions won</span></th>
+          <th class="num">95% CI</th><th class="num">points</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in leaderboard %}
+        <tr>
+          <td class="num">{{ r.rank }}</td>
+          <td class="mono">{{ r.model }}</td>
+          <td class="num">{{ r.n }}</td>
+          <td class="num">{{ r.extraction }}</td>
+          <td class="num">{{ r.ci }}</td>
+          <td class="num">{{ r.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">Rank by CI overlap: tied models share a rank (LMSYS convention).</p>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+<section id="conditions">
+  <p class="kicker">Results</p>
+  <h2>Conditions</h2>
+  {% if conditions %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>condition</th><th class="num">n</th><th class="num">cascades</th>
+          <th class="num">null</th><th class="num">brokered pulls</th>
+          <th class="num">credit payback</th><th class="num">payback</th><th class="num">gini</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in conditions %}
+        <tr>
+          <td class="mono">{{ r.condition }}</td>
+          <td class="num">{{ r.n }}</td>
+          <td class="num">{{ r.cascades }}</td>
+          <td class="num">{{ r.cascade_null }}</td>
+          <td class="num">{{ r.brokered_pull_rate }}</td>
+          <td class="num">{{ r.credit_payback }}</td>
+          <td class="num">{{ r.payback_rate }}</td>
+          <td class="num">{{ r.gini }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Reading the columns: cascades and null are confirmed A→B→C chains per episode, observed vs turn-shuffled (the paired difference with CI is in Q2). payback is the share of pulls later reciprocated — a loyalty statistic with a tested chance floor of about 0.78 (random retargeting among five seats, metrics.payback_chance_floor), so read the excess, not the level.</p>
+  {% else %}
+  <p class="empty">&mdash;</p>
+  {% endif %}
+</section>
+
+{% if next_up %}
+<section id="next">
+  <p class="kicker">Plan</p>
+  <h2>{{ next_up.title }}</h2>
+  {{ next_up.html | safe }}
+</section>
+{% endif %}
+
+</main>
+</div>
+{% endblock %}

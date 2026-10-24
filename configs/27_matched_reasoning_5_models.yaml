@@ -1,0 +1,120 @@
+# Exploratory assay, 10 September 2026. Requested effort none vs medium, same endpoint, for the five arena
+# models with provider evidence for both efforts; gpt-5.5 already ran in configs/25. Seeds 45-48.
+# prepare() overrides log_dir, native, spending, budget.
+stage: exploratory
+log_dir: logs/27_matched_reasoning_5_models
+max_tasks: 1
+protocol_capabilities: null
+native:
+  max_concurrent_episodes: 1
+  allow_estimated_cost: false
+spending:
+  ledger: logs/controlled-spending.sqlite3
+  cap_usd: 250
+  manifest: logs/27_matched_reasoning_5_models/routes.json
+cost:
+  avg_input_tokens_per_call: 3000
+  avg_output_tokens_per_call: 1000
+  model_prices:
+    gpt-5.4:
+      input_usd_per_mtok: 2.5
+      output_usd_per_mtok: 15.0
+      cache_read_usd_per_mtok: 0.25
+      cache_write_usd_per_mtok: 0.0
+    gpt-5.4-mini:
+      input_usd_per_mtok: 0.75
+      output_usd_per_mtok: 4.5
+      cache_read_usd_per_mtok: 0.075
+      cache_write_usd_per_mtok: 0.0
+    gpt-5.4-nano:
+      input_usd_per_mtok: 0.2
+      output_usd_per_mtok: 1.25
+      cache_read_usd_per_mtok: 0.02
+      cache_write_usd_per_mtok: 0
+    gpt-5.6-sol:
+      input_usd_per_mtok: 2.0
+      output_usd_per_mtok: 10.0
+      cache_read_usd_per_mtok: 0.2
+      cache_write_usd_per_mtok: 2.5
+    grok-4.3:
+      input_usd_per_mtok: 1.25
+      output_usd_per_mtok: 2.5
+      cache_read_usd_per_mtok: 0.2
+      cache_write_usd_per_mtok: 0.0
+budget:
+  max_estimated_usd: 250
+  max_actual_usd: 250
+arms:
+- name: reasoning_effort_gpt_5_4
+  task: matched_reasoning
+  model: gpt-5.4
+  provider: azure
+  seeds:
+  - 45
+  - 46
+  - 47
+  - 48
+  seats: 3
+  rounds: 2
+  actions_per_round: 3
+  max_tokens: 8192
+  judges: &id001
+  - opus-4.8
+  - gpt-5.5
+  - qwen3.7-max
+- name: reasoning_effort_gpt_5_4_mini
+  task: matched_reasoning
+  model: gpt-5.4-mini
+  provider: openai
+  seeds:
+  - 45
+  - 46
+  - 47
+  - 48
+  seats: 3
+  rounds: 2
+  actions_per_round: 3
+  max_tokens: 8192
+  judges: *id001
+- name: reasoning_effort_gpt_5_4_nano
+  task: matched_reasoning
+  model: gpt-5.4-nano
+  provider: openai
+  seeds:
+  - 45
+  - 46
+  - 47
+  - 48
+  seats: 3
+  rounds: 2
+  actions_per_round: 3
+  max_tokens: 8192
+  judges: *id001
+- name: reasoning_effort_gpt_5_6_sol
+  task: matched_reasoning
+  model: gpt-5.6-sol
+  provider: openai
+  seeds:
+  - 45
+  - 46
+  - 47
+  - 48
+  seats: 3
+  rounds: 2
+  actions_per_round: 3
+  max_tokens: 8192
+  judges: *id001
+- name: reasoning_effort_grok_4_3
+  task: matched_reasoning
+  model: grok-4.3
+  provider: xai
+  seeds:
+  - 45
+  - 46
+  - 47
+  - 48
+  seats: 3
+  rounds: 2
+  actions_per_round: 3
+  max_tokens: 8192
+  judges: *id001

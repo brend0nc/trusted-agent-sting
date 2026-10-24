@@ -1,0 +1,35 @@
+# Exploratory assay. Same endpoint and request settings; only effort changes.
+# Fill protocol_capabilities with fresh, exact provider evidence before a live run.
+stage: exploratory
+log_dir: logs/25_matched_reasoning
+max_tasks: 1
+protocol_capabilities: null
+native:
+  max_concurrent_episodes: 1
+  allow_estimated_cost: false
+spending:
+  ledger: logs/controlled-spending.sqlite3
+  cap_usd: 100
+  manifest: logs/25_matched_reasoning/routes.json
+cost:
+  avg_input_tokens_per_call: 3000
+  avg_output_tokens_per_call: 1000
+  model_prices:
+    gpt-5.5:
+      input_usd_per_mtok: 10
+      output_usd_per_mtok: 45
+      cache_read_usd_per_mtok: 1
+budget:
+  max_estimated_usd: 100
+  max_actual_usd: 100
+arms:
+  - name: reasoning_effort
+    task: matched_reasoning
+    model: gpt-5.5
+    provider: openai
+    seeds: [41, 42, 43, 44]
+    seats: 3
+    rounds: 2
+    actions_per_round: 3
+    max_tokens: 8192
+    judges: [opus-4.8, gpt-5.5, qwen3.7-max]

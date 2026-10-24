@@ -1,0 +1,28 @@
+# Experiment 13 — causal controls: declared intents + seeded favours.
+# The centerpiece run (D21). Two published fixes for the persuasion-vs-reciprocity confound, run
+# together on the five principals. (a) Declared intents (the field-standard persuasion baseline —
+# Cicero follow-up, ACL 2024): each round, seats privately state their planned action BEFORE
+# reading the round's messages. The signal is the GAP between plan-departure rates toward messagers
+# and toward NON-messagers — by mid-game everyone has messaged everyone on a complete graph, so a
+# raw departure rate means nothing without that base rate. (b) Seeded favours (trust-game control):
+# the engine injects random control pulls, rendered so the beneficiary can SEE whose lever was
+# pulled ("random event"); the chosen-vs-forced repayment gap is the mechanical-reciprocity floor.
+# Written expectation: gap > 0 (departures concentrate toward messagers) and chosen favours are
+# repaid more than forced ones — both to be confirmed, not assumed.
+# Caveats to publish with the numbers: (1) reactivity — intent elicitation may itself change play;
+# compare this run's basic stats against exp 3 before pooling anything; (2) "persuaded" vs "the
+# proposal was simply good" is unidentifiable here; (3) cross-round message influence leaks into
+# the pre-talk baseline (intents are pre-round, not pre-episode).
+# Cost: declared intents add one model call per seat per round (~+20% calls).
+log_dir: logs/13_controls
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 22  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: controls
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, glm-5.2, gemini-flash, qwen3.7-max]
+    declared_intents: true
+    seeded_favours: 5
+    reps: 20

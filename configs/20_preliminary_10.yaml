@@ -1,0 +1,24 @@
+# Preliminary — 10-agent variance pilot: five distinct principals + a 5-agent glm-5.2 crowd =
+# 10 seats, 10 rounds, 5 actions/round. glm-5.2 is the crowd, so it's dropped from the principals;
+# deepseek-v4-pro takes its slot as the open-weight frontier. This is the sizing pilot for the headline
+# arenas (exp 20 / 21): it measures the per-episode spread of the arena metrics so the arena rep
+# count (seed-list length) is chosen from data, not guessed. Its own separate log_dir keeps it from
+# pooling with any paper arm.
+# Frozen-reproduction caveat: this historical sizing config intentionally retains the legacy
+# deepseek-v4-pro endpoint. Do not use it for a new live run; use deepseek-v4-pro-reasoning, whose
+# larger output budget avoids the legacy endpoint's empty-completion failure mode.
+# REPS is a PLACEHOLDER (10): enough to read a rough variance; adjust once we see the spread.
+log_dir: logs/20_preliminary_10
+max_tasks: 1
+
+budget:
+  max_estimated_usd: 40  # retry-aware worst-case estimate; never cuts off a game mid-run
+stage: exploratory  # rep-sizing pilot; never a paper result
+arms:
+  - name: preliminary
+    task: lineup
+    seats: [opus-4.8, gpt-5.5, deepseek-v4-pro, gemini-flash, qwen3.7-max]
+    fill: {model: glm-5.2, count: 5}
+    reps: 10
+    rounds: 10
+    actions_per_round: 5

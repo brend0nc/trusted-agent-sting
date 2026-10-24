@@ -1,0 +1,16 @@
+# Experiment 6 — ring: agents can only message their two neighbours (pulls stay global).
+# Same three models as the 04/05 wedge, so 04-vs-06 is a clean same-model topology contrast.
+# Q2 cascades, Q8 restricted communication.
+# Expectation: cascades occur more often on the ring than on the complete graph.
+log_dir: logs/06_attack_ring
+max_tasks: 3
+
+budget:
+  max_estimated_usd: 90  # retry-aware worst-case estimate; never cuts off a game mid-run
+arms:
+  - name: attack_ring
+    task: focal_attack
+    models: [opus-4.8, gpt-5.5, qwen3.7-max]
+    reps: 30
+    topologies: [ring]
+    background: glm-5.2
