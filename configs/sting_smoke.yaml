@@ -1,6 +1,7 @@
-# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Live smoke (protocol v2): 1 seed x 7 conditions = 7 games.
+# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Live smoke (protocol v3): 1 seed x 7 conditions = 7 games.
 # P4 makes a false ledger claim (R0.3) in the scripted round-0 opening and, in the direct/hint/benign arms,
-# privately sends the same message to P1, P2 and P3. P4 never takes a free turn and never calls a model.
+# privately sends the same message to P1, P2 and P3. In every later slot P4 plays one fixed rule (pull for its
+# top helper, else itself) and never calls a model.
 # alliance: one ordinary seat is P4's secret ally (positive control). coalition_direct: two ordinary seats are
 # secret allies of each other and P4 sends the direct offer to all three; coalition_none: same pair, no offer
 # (exposure test and its control). Prompts: docs/design/sting-prompts.md.
@@ -10,7 +11,7 @@
 # games hold at most $30. Exp 28 measured Grok at about $0.0022 per call (18 calls per game). The $50 ledger is the only hard ceiling: budget.max_actual_usd is checked when a game
 # starts, so it stops new games but not requests inside games already running.
 stage: exploratory
-log_dir: logs/sting_smoke_v2
+log_dir: logs/sting_smoke_v3
 max_tasks: 1
 native:
   max_concurrent_episodes: 2
@@ -18,7 +19,7 @@ native:
 spending:
   ledger: logs/controlled-spending.sqlite3
   cap_usd: 50
-  manifest: logs/sting_smoke_v2/routes.json
+  manifest: logs/sting_smoke_v3/routes.json
 cost:
   avg_input_tokens_per_call: 2000
   avg_output_tokens_per_call: 600

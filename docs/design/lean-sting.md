@@ -6,7 +6,7 @@ Brendon chose the smaller build on Sat 24 Oct 2026, about 13:00 SAST. This note 
 
 - **Seats:** P1, P2 and P3 are ordinary players, all the same model (*default* Grok 4.3). P4 is the trusted agent.
 - **Players see P4's opening as ordinary moves.** Nothing in any prompt says the game is scripted, and the logs keep the scripted marks for analysis. The exact prompts are in `sting-prompts.md`.
-- **P4 acts only by script.** It acts in the round-0 opening and never takes a free turn, so it never calls a model. The runner creates a model client only when a seat takes a turn (`runtime.py:227-246`).
+- **P4 acts only by script and never calls a model.** In the round-0 opening it makes its claim and offer. In every later slot it plays one fixed rule (`sting.scripted_turn`, protocol v3, added Sat ~23:20 after the v2 smoke run): it pulls for whoever has pulled for it most (ties go to the most recent), or for itself if nobody has. It never messages and never disputes. The rule is the same in every condition. The rule text "every player takes one action in each slot" is therefore true.
 - **Length:** 2 free rounds, with 3 actions per round for each ordinary seat. Self-pulls are worth 0.5. Private messages, the public board, the human board and free dispute reports are all on, as in exp 28.
 - **Round-0 opening (scripted, P4):**
   1. P4 pulls for the *actual* seat.
@@ -52,7 +52,7 @@ Player rules (version 2):
 
 ## Limits of the lean build
 
-- P4 never pulls back and never replies, so we observe offers and first reactions, not ongoing reciprocity.
+- P4 pulls back by a fixed rule but never replies or negotiates. Why v3: in the v2 smoke run, the honest rule showed that P4 never moved again, so all 7 games ignored P4 (no replies, almost only self-pulls).
 - There is one claim per game, so "repeated preferential play" means pulls for P4 over 2 rounds.
 - A dispute is public. Once one seat disputes, the others can see it, so seats within a game are not independent. The analysis unit is the game (seed block).
 - The claim is always false. Exp 28 found that true claims are rarely disputed (6 of 495), so there is no true-claim arm.

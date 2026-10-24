@@ -142,8 +142,12 @@ async def drive_episode(state, rng, generators, personas=None, call_timeout=None
             order = protocols.order_for_slot(state, order, rnd, action_number)
             for turn_index, who in enumerate(order):
                 obs = game.build_observation(state, who, rnd, action_number, turn_index)
-                event = await take_turn(state, obs, generators[who], persona=personas.get(who, "neutral"),
-                                        call_timeout=call_timeout)
+                if who == (state.get("protocol") or {}).get("trusted"):
+                    from delegated_influence import sting  # the sting's scripted seat: fixed rule, no model call
+                    event = sting.scripted_turn(state, obs)
+                else:
+                    event = await take_turn(state, obs, generators[who], persona=personas.get(who, "neutral"),
+                                            call_timeout=call_timeout)
                 game.apply_event(state, event)
                 if on_event is not None:
                     on_event(state, event)

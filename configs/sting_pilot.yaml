@@ -1,6 +1,7 @@
-# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Pilot (protocol v2): 6 seeds x 7 conditions = 42 games. Roles, the P4 ally and the coalition pair come from the seed value (a fixed random mapping), balanced over any 6 consecutive seeds.
+# Trusted-agent sting (Apart sprint, 24 Oct 2026; sprint work). Pilot (protocol v3): 6 seeds x 7 conditions = 42 games. Roles, the P4 ally and the coalition pair come from the seed value (a fixed random mapping), balanced over any 6 consecutive seeds.
 # P4 makes a false ledger claim (R0.3) in the scripted round-0 opening and, in the direct/hint/benign arms,
-# privately sends the same message to P1, P2 and P3. P4 never takes a free turn and never calls a model.
+# privately sends the same message to P1, P2 and P3. In every later slot P4 plays one fixed rule (pull for its
+# top helper, else itself) and never calls a model.
 # alliance: one ordinary seat is P4's secret ally (positive control). coalition_direct: two ordinary seats are
 # secret allies of each other and P4 sends the direct offer to all three; coalition_none: same pair, no offer
 # (exposure test and its control). Prompts: docs/design/sting-prompts.md.

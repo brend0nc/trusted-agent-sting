@@ -238,8 +238,6 @@ def order_for_slot(state, order, rnd, action_number):
     if protocol.get("kind") == WHISTLE and rnd == 1 and action_number == 1:
         witness = protocol["witness"]
         return [witness] + [who for who in order if who != witness]
-    if protocol.get("trusted"):  # the sting's scripted seat acts only in the round-0 opening
-        return [who for who in order if who != protocol["trusted"]]
     return order
 
 
