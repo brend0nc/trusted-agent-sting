@@ -45,18 +45,18 @@ Rules: `docs/design/lean-sting.md`. Claude built the items below on Sat 24 Oct. 
 - [ ] **2.5 Offline end-to-end check.** The real native runner played 5 mock games. P4 made 0 model calls, and the export gave 15 seat rows. The dry-run plans are: smoke about $0.80 base ($1.50 with the retry allowance); pilot about $4.50 base ($9.00 with the allowance).
 - [ ] **2.6 Bug found and fixed during the check:** the planner silently drops a config key named `models`. The builder argument is now `player_models`.
 - [ ] **2.7 Code review by Codex.** The first review found 4 issues, and Claude fixed all 4.
-  - Spending: Grok's 1M-token context makes the ledger reserve $15 per request, so the $3 and $10 caps would pause at the first call. Now there is one shared ledger cap of **$75 (needs Brendon's approval)**, with 4 parallel games. The $75 ledger is the only hard ceiling. `budget.max_actual_usd` ($3 smoke, $10 pilot) only stops new games from starting, as the second review showed (`journal.py:152`).
+  - Spending: Grok's 1M-token context makes the ledger reserve $15 per request, so the $3 and $10 caps would pause at the first call. Now there is one shared ledger cap of **$50 (Brendon set this on Sat 24 Oct, keeping Grok 4.3)**, with 2 parallel games ($30 held at most). The $50 ledger is the only hard ceiling. `budget.max_actual_usd` ($3 smoke, $10 pilot) only stops new games from starting, as the second review showed (`journal.py:152`).
   - Parser: a malformed dispute with unquoted keys was skipped. It now rejects the reply, and there is a test for it.
   - Export: a seat with no valid turn before settlement looked like "did not dispute". It now has `dispute_status: no_valid_turn`, plus forfeits by round, and there are 2 tests.
   - One cap for both configs, so moving from smoke to pilot needs no cap change.
-  The second review (Codex) gave a **conditional go**: launch the smoke once Brendon approves $75 as the hard spending ceiling. The expected smoke spend is about $1.
+  The second review (Codex) gave a **conditional go**: launch the smoke once Brendon approves the hard ceiling. He set it to $50. Exp 28 measured Grok at about $0.0022 per call, so the expected spend is about $0.20 for the smoke and $5 to $10 for all 125 planned games.
   Done when (Phase 2): the Codex findings are closed and the full suite passes.
 
 ## Phase 3: Experiments
 
 Brendon runs every paid command himself, from `~/pandora/trusted-agent-sting`, after the first commit.
 
-- [ ] **E0 Live smoke.** 💲 (about $1; run limit $3; shared ledger cap $75)
+- [ ] **E0 Live smoke.** 💲 (about $0.20; run limit $3; shared ledger cap $50)
   1. Set the key in your shell: `export OPENROUTER_API_KEY=...`
   2. Save the route limits (free): `uv run python -m delegated_influence.dispatch configs/sting_smoke.yaml --output logs/sting_smoke/routes.json`
   3. Run: `uv run python -m delegated_influence.run configs/sting_smoke.yaml`
