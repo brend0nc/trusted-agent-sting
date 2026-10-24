@@ -352,6 +352,7 @@ def build_observation(state, agent, rnd, action_number, turn_index):
         "human_board": state.get("human_board", False),
         **({"free_reports": True} if state.get("free_reports") else {}),
         **({"stakes": dict(state["stakes"])} if state.get("stakes") else {}),
+        **({"rules_note": state["rules_notes"][agent]} if agent in state.get("rules_notes", {}) else {}),
         "punish_enabled": state["punish_enabled"],
         "can_message": list(state["message_graph"][agent]),
         # Keep exact public actions for the current and previous round. Older actions stay in the

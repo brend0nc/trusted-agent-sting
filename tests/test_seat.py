@@ -77,6 +77,28 @@ class TestExtractJson(unittest.TestCase):
         text = 'e.g. {"action":"message","to":"P2","text":"x"}\nchoice: {"action":"pull","beneficiary":"P3",}'
         self.assertEqual(seat.extract_json(text), {"action": "pull", "beneficiary": "P3"})
 
+    def test_mixed_quotes_python_literal(self):
+        reply = "{'action': 'say', 'text': \"I don't think R0.3 is right\"}"
+        self.assertEqual(seat.extract_json(reply), {"action": "say", "text": "I don't think R0.3 is right"})
+
+    def test_single_object_skips_prose_brackets(self):
+        # A stray brace or bracket in prose must not turn a valid action into a parse-failure forfeit.
+        pull = {"action": "pull", "beneficiary": "P2", "credit": None}
+        self.assertEqual(seat.extract_json('No {drama} here. {"action": "pull", "beneficiary": "P2", "credit": null}',
+                                           single_object=True), pull)
+        self.assertEqual(seat.extract_json('Entry [R0.3] is odd. {"action": "pull", "beneficiary": "P2", "credit": null}',
+                                           single_object=True), pull)
+
+    def test_single_object_still_rejects_ambiguous_replies(self):
+        invalid_parent = '{"action": "pull", "beneficiary": P2, "report": {"action": "say", "text": "hi"}}'
+        self.assertIsNone(seat.extract_json(invalid_parent, single_object=True))  # inner report never recovered
+        two = '{"action": "pull", "beneficiary": "P1"} {"action": "pull", "beneficiary": "P2"}'
+        self.assertIsNone(seat.extract_json(two, single_object=True))
+        self.assertIsNone(seat.extract_json('[{"action": "pull", "beneficiary": "P2"}]', single_object=True))
+        self.assertIsNone(seat.extract_json("{'action': 'pull', 'action': 'say'}", single_object=True))
+        unquoted = '{report: {action: "dispute", statement: "R0.3"}} {"action":"pull","beneficiary":"P1"}'
+        self.assertIsNone(seat.extract_json(unquoted, single_object=True))  # a malformed dispute is never skipped
+
 
 class TestParseIntent(unittest.TestCase):
     def test_reason_is_returned_alongside_plan(self):

@@ -3,6 +3,7 @@
 No network, no async — the solver owns the model call and retry budget.
 """
 
+import ast
 import json
 import re
 from dataclasses import dataclass
@@ -103,7 +104,8 @@ def credit_clause(human_board=False):
 
 def build_system_prompt(name, agents, rounds, actions_per_round, persona="neutral",
                         self_pull_reward=0, messages_off=False, public_chat=False,
-                        punish_enabled=False, human_board=False, free_reports=False, stakes=None):
+                        punish_enabled=False, human_board=False, free_reports=False, stakes=None,
+                        rules_note=None):
     """The seat's system prompt: the base rules plus an optional persona clause.
 
     The credit clause appears whenever any channel exists someone could have asked you through.
@@ -190,6 +192,8 @@ def build_system_prompt(name, agents, rounds, actions_per_round, persona="neutra
             )
             base += "\nExample of a normal action with a dispute:\n  " + json.dumps(
                 {**json.loads(pull_json), "report": {"action": "dispute", "statement": "R0.3"}})
+    if rules_note:  # one protocol-fixed private line for this seat only (the sting's alliance control)
+        base += "\n\n" + rules_note
     credit = credit_clause(human_board) if can_be_asked else ""
     clause = _PERSONA_CLAUSE[persona]
     if persona == "attacker" and messages_off:
@@ -345,8 +349,49 @@ def parse_loose_json(text, start, decoder=None):
     try:
         obj = decoder.decode(s) if decoder is not None else json.loads(s)
     except ValueError:
-        return None
+        obj = _python_literal(text[start:end])  # mixed quotes: {'text': "I don't agree"}
     return (obj, end - start) if isinstance(obj, dict) else None
+
+
+def _python_literal(span):
+    """A Python dict literal as a dict, or None. Duplicate keys are rejected, as in strict parsing."""
+    try:
+        node = ast.parse(span, mode="eval").body
+    except SyntaxError:
+        return None
+    for sub in ast.walk(node):
+        if isinstance(sub, ast.Dict):
+            keys = [k.value for k in sub.keys if isinstance(k, ast.Constant)]
+            if len(keys) != len(set(keys)):
+                return None
+    try:
+        value = ast.literal_eval(node)
+    except (ValueError, TypeError, SyntaxError, MemoryError, RecursionError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
+def _balanced_end(text, start):
+    """Index just past the bracket that closes text[start] ('{' or '['), or None."""
+    opener = text[start]
+    closer = "}" if opener == "{" else "]"
+    depth = 0
+    for j in range(start, len(text)):
+        if text[j] == opener:
+            depth += 1
+        elif text[j] == closer:
+            depth -= 1
+            if depth == 0:
+                return j + 1
+    return None
+
+
+def _looks_like_json(span):
+    """Prose such as "{drama}" or "[R0.3]" has no key-value colon, quote or nested object.
+
+    Unquoted keys ({report: {...}}) still count as an attempted object, so a malformed dispute is
+    rejected rather than skipped in favour of a later object."""
+    return any(mark in span[1:] for mark in (":", "{", '"'))
 
 
 def _unique_json_fields(pairs):
@@ -381,13 +426,20 @@ def extract_json(text, *, single_object=False):
                     i += size
                     continue
                 if single_object:
-                    return None
+                    # Skip the whole span, so an inner report is never recovered from an invalid
+                    # parent; only a span that looks like JSON makes the reply invalid.
+                    span_end = _balanced_end(text, i)
+                    if span_end is None or _looks_like_json(text[i:span_end]):
+                        return None
+                    i = span_end
+                    continue
                 i += 1
                 continue
             if isinstance(obj, dict):
                 objects.append(obj)
             elif single_object:
-                return None
+                if _looks_like_json(text[i:i + end]):
+                    return None
             i += end
         else:
             i += 1

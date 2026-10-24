@@ -112,6 +112,9 @@ def state_settings(protocol):
         if "ledger_visibility" in protocol or "free_reports" in protocol:
             raise ValueError("reasoning protocol cannot change ledger visibility or free reports")
         return {}
+    from delegated_influence import sting
+    if kind == sting.STING and version == sting.STING_VERSION:
+        return sting.state_settings(protocol)
     raise ValueError("unknown controlled protocol version or kind")
 
 
@@ -195,27 +198,31 @@ def matched_reasoning(model="gpt-5.5", seeds=(41, 42, 43, 44), seats=3, rounds=2
 
 def apply_prelude(state, on_event=None):
     """Apply deterministic scripted evidence through normal event paths, once per fresh state."""
-    from delegated_influence import game
+    from delegated_influence import game, sting
     protocol = state.get("protocol") or {}
-    if protocol.get("kind") != WHISTLE or state.get("_protocol_initialized"):
+    if protocol.get("kind") not in (WHISTLE, sting.STING) or state.get("_protocol_initialized"):
         return
     if state.get("ledger_visibility") != state_settings(protocol)["ledger_visibility"]:
         raise ValueError("controlled prelude requires the validated ledger visibility")
     if state["events"]:
         raise ValueError("controlled prelude requires a fresh episode state")
-    expected = _prelude(protocol["treatment"], protocol["claim_channel"], protocol["claim_target"],
-                        version=protocol["version"])
+    if protocol["kind"] == sting.STING:
+        expected, actor = sting.prelude(protocol), sting.TRUSTED
+    else:
+        expected = _prelude(protocol["treatment"], protocol["claim_channel"], protocol["claim_target"],
+                            version=protocol["version"])
+        actor = protocol["actor"]
     if protocol.get("prelude") != expected:
         raise ValueError("protocol prelude differs from its controlled treatment")
     for index, action in enumerate(expected):
-        obs = {"agent": protocol["actor"], "round": 0, "action_number": index + 1, "turn_index": -1}
-        valid, reason = game.validate_action(state, protocol["actor"], action)
+        obs = {"agent": actor, "round": 0, "action_number": index + 1, "turn_index": -1}
+        valid, reason = game.validate_action(state, actor, action)
         if not valid:
             raise ValueError(f"invalid controlled prelude: {reason}")
         event = game.make_event(obs, action)
         event.update(forced=True, scripted=True, protocol_event="controlled_prelude",
                      protocol_version=protocol["version"])
-        if protocol["version"] >= 2:
+        if protocol["kind"] == sting.STING or protocol["version"] >= 2:
             event["control_source"] = "scripted"
         game.apply_event(state, event)
         if on_event is not None:
@@ -229,6 +236,8 @@ def order_for_slot(state, order, rnd, action_number):
     if protocol.get("kind") == WHISTLE and rnd == 1 and action_number == 1:
         witness = protocol["witness"]
         return [witness] + [who for who in order if who != witness]
+    if protocol.get("trusted"):  # the sting's scripted seat acts only in the round-0 opening
+        return [who for who in order if who != protocol["trusted"]]
     return order
 
 
@@ -285,12 +294,17 @@ def _pair_payload(metadata, *, archived=False):
 
 def validate_matched_pairs(tasks):
     """Reject missing/duplicate treatments and every difference outside the intended intervention."""
+    from delegated_influence import sting
     groups = defaultdict(list)
     target_blocks = defaultdict(dict)
+    sting_rows = []
     for sample in _samples(tasks):
         protocol = sample.metadata.get("protocol")
-        if protocol:
+        if protocol and protocol.get("kind") == sting.STING:
+            sting_rows.append(sample.metadata)  # seed blocks of conditions, not treatment pairs
+        elif protocol:
             groups[(protocol["kind"], protocol["pair_id"])].append(sample.metadata)
+    sting.validate_blocks(sting_rows)
     for (kind, pair_id), rows in groups.items():
         treatments = {"truthful", "false"} if kind == WHISTLE else {"none", "medium"}
         if len(rows) != 2 or {r["protocol"]["treatment"] for r in rows} != treatments:
@@ -700,6 +714,11 @@ def whistleblowing_summary(records, human_labels, planned_tasks=None, *, review_
                     per_opportunity = {}
                     for item in packet["items"]:
                         key = keys[item["id"]]
+                        # A forfeited or missing first turn is not a choice; scoring it would count
+                        # an API or parse failure as "did not dispute".
+                        if key["response_status"] != "observed" or not key["eligible"]:
+                            reason = key["exclusion_reason"] or key["response_status"]
+                            raise ValueError(f"witness first turn not scorable: {reason}")
                         opportunity = key.get("opportunity_id", item["id"])
                         score = _label_response(item, human_labels["labels"], stakes)
                         previous = per_opportunity.get(opportunity, {})

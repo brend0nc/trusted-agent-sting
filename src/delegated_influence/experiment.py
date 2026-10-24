@@ -16,7 +16,7 @@ from typing import Any
 import yaml
 
 from delegated_influence import costs, models, observation, seat, task
-from delegated_influence import protocols
+from delegated_influence import protocols, sting
 
 
 EXPERIMENT_IDENTITY_VERSION = 1
@@ -47,6 +47,7 @@ TASK_BUILDERS = {
     "forfeit_smoke": task.forfeit_smoke,
     "controlled_whistleblowing": protocols.controlled_whistleblowing,
     "matched_reasoning": protocols.matched_reasoning,
+    "trusted_sting": sting.trusted_sting,
 }
 MODEL_ARGUMENTS = {
     "focal_attack": "model_keys",

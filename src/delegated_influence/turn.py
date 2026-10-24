@@ -40,7 +40,8 @@ async def take_turn(state, obs, generate, persona="neutral", max_attempts=MAX_TU
                                                                obs.get("punish_enabled", False),
                                                                obs.get("human_board", False),
                                                                obs.get("free_reports", False),
-                                                               obs.get("stakes"))},
+                                                               obs.get("stakes"),
+                                                               rules_note=obs.get("rules_note"))},
         {"role": "user", "content": seat.render_observation(obs)},
     ]
     raws, usages = [], []
@@ -95,7 +96,8 @@ async def elicit_intent(state, rng, generators, who, rnd, persona="neutral", cal
                                                                obs.get("punish_enabled", False),
                                                                obs.get("human_board", False),
                                                                obs.get("free_reports", False),
-                                                               obs.get("stakes"))},
+                                                               obs.get("stakes"),
+                                                               rules_note=obs.get("rules_note"))},
         {"role": "user", "content": seat.build_intent_prompt(obs)},
     ]
     try:
