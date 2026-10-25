@@ -86,7 +86,20 @@ Brendon runs every paid command himself, from `~/pandora/trusted-agent-sting`. K
   - It also fixes 3 bugs from the other session's review (`docs/design/code-review-and-unknowns-2026-10-25.md`): B2 (preflight now simulates every condition), B3 (the export never pools protocol versions, and rows carry `protocol_version`) and B6 (P4's pulls count in the mutual-pull summary). It also fixes B10 (the P4 model-call test can now fail).
   - Checks: 20 sting tests pass, and the full suite passes apart from the 19 old-data failures. 7 mock games through the runner show 0 P4 calls. Preflight passes for the smoke run, the pilot and exp 28. Routes were refreshed at 11:20 Sun, valid for 24 h.
 - [ ] **E0g Smoke v4.** 💲 (about $0.30) `bash scripts/run_bg.sh configs/sting_smoke.yaml` (log folder `logs/sting_smoke_v4`).
-- [ ] **E1 Positive-control pilot.** 💲 (run limit $10) Start in the background with a log: `bash scripts/run_bg.sh configs/sting_pilot.yaml`. Then export as in E0, with `sting_pilot`.
+  **Smoke v4 result (Sun ~11:45):** 7 of 7 games, $0.36, 0 forfeits, 0 P4 calls. There were 2 replies to P4, both quoted in the research log. R0.3 was disputed in 6 of 7 games. The rule of replies in at least 2 of 3 offer games failed (only 1 of 3).
+- [ ] **E0h De-risk checks for the final run (Sun ~12:15, all free).** These passed:
+  - The plan: 126 games, balanced by role.
+  - Preflight.
+  - The budget (estimate $18.10 against the $20 limit; ledger $1.17 of $50 spent).
+  - The route manifest (valid until Mon ~11:40).
+  - A full 126-game mock run through the runner.
+  - A stop-and-resume test (28 games, then 126, no duplicates).
+  - The export (378 rows).
+  - The new `scripts/analyze_sting.py` (analysis plus coding sheet).
+  - The OpenRouter balance ($140.83).
+  Known limitation: by seat label the ally is skewed (P1 9, P3 6, P2 3), finding B8. Waiting for Codex's transcript review.
+- [ ] **E2 Final run.** 💲 (about $5, about 2.5 to 3 h) `bash scripts/run_bg.sh configs/sting_main.yaml`, then export with `uv run python -m delegated_influence.sting logs/sting_main --out logs/sting_main/rows.jsonl`.
+- [ ] **E1 Positive-control pilot** (replaced by E2; kept for the record). 💲 (run limit $10) Start in the background with a log: `bash scripts/run_bg.sh configs/sting_pilot.yaml`. Then export as in E0, with `sting_pilot`.
   Gate: the alliance seat pulls for P4 and does not dispute in most alliance games, the offers reach all three seats, and at least 95% of turns are valid.
 - [ ] **Checkpoint.** If the gate passes, write the main config. If the gate fails, stop and report the failed control.
 - [ ] **E2 Main run.** 💲 (size and cap set after the pilot's real cost)
