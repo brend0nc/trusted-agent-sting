@@ -81,6 +81,11 @@ Brendon runs every paid command himself, from `~/pandora/trusted-agent-sting`. K
   - The export adds `pulls_from_p4`.
   - Checks: 19 sting tests pass, the full suite passes apart from the 19 old-data failures, 7 mock games through the real runner show 0 P4 calls and 6 P4 moves per game, and preflight and dry-run pass (smoke 7 games at about $0.50, pilot 42 games at about $3).
 - [ ] **E0e Smoke v3.** 💲 (about $0.30) `bash scripts/run_bg.sh configs/sting_smoke.yaml` (log folder `logs/sting_smoke_v3`).
+  **Smoke v3 result (Sat ~23:05):** 7 of 7 games, $0.28, 0 forfeits. P4 paid the alliance seat back 6 times, but the other seats almost only self-pulled. There was 1 reply to P4 in 7 games (direct, neutral seat: "What's in it for me if I don't dispute?"). R0.3 was disputed at R1.1 in every game.
+- [ ] **E0f Protocol v4 (Sun ~11:15).** Brendon: "Back to exp 28 rules". Players get the engine's exp 28 system prompt and the human board again. P4 keeps its fixed rule in every slot, so "every participant acts once per slot" is true. Scripted labels stay hidden, and the natural offers stay.
+  - It also fixes 3 bugs from the other session's review (`docs/design/code-review-and-unknowns-2026-10-25.md`): B2 (preflight now simulates every condition), B3 (the export never pools protocol versions, and rows carry `protocol_version`) and B6 (P4's pulls count in the mutual-pull summary). It also fixes B10 (the P4 model-call test can now fail).
+  - Checks: 20 sting tests pass, and the full suite passes apart from the 19 old-data failures. 7 mock games through the runner show 0 P4 calls. Preflight passes for the smoke run, the pilot and exp 28. Routes were refreshed at 11:20 Sun, valid for 24 h.
+- [ ] **E0g Smoke v4.** 💲 (about $0.30) `bash scripts/run_bg.sh configs/sting_smoke.yaml` (log folder `logs/sting_smoke_v4`).
 - [ ] **E1 Positive-control pilot.** 💲 (run limit $10) Start in the background with a log: `bash scripts/run_bg.sh configs/sting_pilot.yaml`. Then export as in E0, with `sting_pilot`.
   Gate: the alliance seat pulls for P4 and does not dispute in most alliance games, the offers reach all three seats, and at least 95% of turns are valid.
 - [ ] **Checkpoint.** If the gate passes, write the main config. If the gate fails, stop and report the failed control.

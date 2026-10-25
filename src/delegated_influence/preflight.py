@@ -144,31 +144,14 @@ def _condition_key(md):
     return (md.get("topology"), bool(md.get("messages_off")), bool(md.get("public_chat")),
             bool(md.get("human_board")), md.get("self_pull_reward") or 0, tuple(sorted((md.get("personas") or {}).values())),
             bool(md.get("principal_seats")), bool(md.get("declared_intents")),
-            int(md.get("seeded_favours") or 0), bool(md.get("punish_enabled")))
-
-
-def _lint_sting_prompt(md, settings):
-    """The sting's own rule text must match what its validator accepts."""
-    from delegated_influence import turn
-    low = turn.system_prompt(game.build_observation(settings, "P1", 1, 1, 0)).lower()
-    problems = []
-    if ('"say"' in low) != bool(md.get("public_chat")):
-        problems.append("sting: say action presence contradicts public_chat")
-    if ('"say_human"' in low) != bool(md.get("human_board")):
-        problems.append("sting: say_human action presence contradicts human_board")
-    if ('"dispute"' in low) != bool(settings.get("stakes") and settings["stakes"].get("dispute", True)):
-        problems.append("sting: dispute example presence contradicts the dispute rule")
-    if "credit" in low or "human" in low:
-        problems.append("sting: prompt mentions credit or humans, which the sting rules removed")
-    return problems
+            int(md.get("seeded_favours") or 0), bool(md.get("punish_enabled")),
+            (md.get("protocol") or {}).get("kind"), (md.get("protocol") or {}).get("condition"))
 
 
 def lint_prompt(md):
     """The prompt an agent would see must match the rules the validator enforces."""
     problems = []
     settings = game.state_from_metadata(md)
-    if (md.get("protocol") or {}).get("kind") == "trusted_sting":
-        return _lint_sting_prompt(md, settings)
     free_reports = bool(settings.get("free_reports"))
     personas = set((md.get("personas") or {}).values()) or {"neutral"}
     for persona in personas:

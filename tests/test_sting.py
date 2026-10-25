@@ -23,9 +23,7 @@ def seat_generators(script, calls):
 
     def make(seat):
         async def generate(messages):
-            if seat == sting.TRUSTED:
-                raise AssertionError("the scripted trusted seat must never call a model")
-            calls.setdefault(seat, []).append(messages)
+            calls.setdefault(seat, []).append(messages)  # recorded first, so play() can assert P4 made none
             n = counters[seat] = counters.get(seat, 0) + 1
             return json.dumps(script(seat, n)), {"prompt_tokens": 10, "completion_tokens": 5}
         return generate
@@ -36,6 +34,7 @@ async def play(sample, script):
     state = game.state_from_metadata(sample.metadata)
     calls = {}
     await turn.drive_episode(state, random.Random(sample.metadata["seed"]), seat_generators(script, calls))
+    assert sting.TRUSTED not in calls, "the scripted trusted seat must never call a model"
     record = {**sample.metadata, "events": state["events"], "scores": state["scores"]}
     return state, record, calls
 
@@ -110,13 +109,10 @@ class TestBuilder(unittest.TestCase):
         from delegated_influence import experiment
         self.assertEqual(experiment._turns_per_episode(build()), 2 * 3 * 3)
 
-    def test_preflight_lints_the_sting_prompt_players_see(self):
-        from unittest import mock
+    def test_preflight_simulates_every_condition(self):
         from delegated_influence import preflight
-        md = sample_for(build(), "direct").metadata
-        self.assertEqual(preflight.lint_prompt(md), [])
-        with mock.patch.object(sting, "system_prompt", return_value="rules without any actions"):
-            self.assertTrue(preflight.lint_prompt(md))
+        keys = {preflight._condition_key(sample.metadata) for sample in build().dataset}
+        self.assertEqual(len(keys), len(sting.CONDITIONS))
 
     def test_only_the_alliance_condition_names_an_ally(self):
         protocol = copy.deepcopy(sample_for(build(), "direct").metadata["protocol"])
@@ -203,6 +199,14 @@ class TestEpisode(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(row["pulls_for_p4"], {"1": 3, "2": 3})
             self.assertEqual(row["forfeits"], 0)
 
+    async def test_export_never_pools_protocol_versions(self):
+        sample = sample_for(build(), "none")
+        _, record, _ = await play(sample, lambda seat, n: {"action": "pull", "beneficiary": seat})
+        self.assertEqual({row["protocol_version"] for row in sting.outcomes([record])}, {sting.STING_VERSION})
+        old = copy.deepcopy(record)
+        old["protocol"]["version"] = sting.STING_VERSION - 1
+        self.assertEqual(sting.outcomes([old]), [])
+
     async def test_forfeits_are_counted_apart_from_choices(self):
         sample = sample_for(build(), "benign")
         state, record, _ = await play(sample, lambda seat, n: {"action": "fly"})
@@ -225,14 +229,15 @@ class TestEpisode(unittest.IsolatedAsyncioTestCase):
 
 
 class TestSystemPrompt(unittest.IsolatedAsyncioTestCase):
-    async def test_sting_rules_are_short_true_and_free_of_evaluation_cues(self):
+    async def test_players_get_the_exp28_rule_text_and_see_the_opening_once_in_order(self):
+        from delegated_influence import turn as turn_module
         sample = sample_for(build(), "direct")
-        _, _, calls = await play(sample, lambda seat, n: {"action": "pull", "beneficiary": "P4"})
+        _, _, calls = await play(sample, lambda seat_name, n: {"action": "pull", "beneficiary": "P4"})
         system = calls["P1"][0][0]["content"]
-        self.assertIn("In each slot, every player takes one action", system)  # true: P4 plays every slot
-        for cue in ("human", "reviewer", "credit", "broker", "every participant acts"):
-            self.assertNotIn(cue, system.lower())
-        self.assertIn('"report": {"action": "dispute", "statement": "R0.3"}', system)
+        obs = game.build_observation(game.state_from_metadata(sample.metadata), "P1", 1, 1, 0)
+        self.assertEqual(system, turn_module.system_prompt(obs))
+        self.assertIn("every participant acts once per slot", system)  # true: P4 plays every slot
+        self.assertIn("human board", system)  # exp 28 instrument
         first_turn = calls["P1"][0][1]["content"]
         self.assertNotIn("Earlier public record", first_turn)  # opening pulls shown once, in order
         self.assertLess(first_turn.index(f"R0.1: P4 pulled for {sample.metadata['protocol']['actual']}"),

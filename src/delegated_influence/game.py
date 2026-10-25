@@ -269,7 +269,7 @@ def _mutual_pull_streaks(ledger, agents, through_round):
 
     directions_by_round = {}
     for entry in ledger:
-        if (entry.get("action") or entry.get("forced")
+        if (entry.get("action") or (entry.get("forced") and not entry.get("display_as_chosen"))
                 or entry["round"] > through_round):
             continue
         puller, beneficiary = entry["puller"], entry["beneficiary"]
@@ -364,8 +364,6 @@ def build_observation(state, agent, rnd, action_number, turn_index):
         **({"free_reports": True} if state.get("free_reports") else {}),
         **({"stakes": dict(state["stakes"])} if state.get("stakes") else {}),
         **({"rules_note": state["rules_notes"][agent]} if agent in state.get("rules_notes", {}) else {}),
-        **({"system_prompt": "trusted_sting"}
-           if (state.get("protocol") or {}).get("kind") == "trusted_sting" else {}),
         "punish_enabled": state["punish_enabled"],
         "can_message": list(state["message_graph"][agent]),
         # Keep exact public actions for the current and previous round. Older actions stay in the

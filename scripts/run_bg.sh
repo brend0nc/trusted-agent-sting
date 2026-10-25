@@ -12,8 +12,12 @@ cfg=${1:?usage: bash scripts/run_bg.sh configs/NAME.yaml}
 grep -q '^OPENROUTER_API_KEY=.' compute.env 2>/dev/null || { echo "compute.env has no OPENROUTER_API_KEY"; exit 1; }
 name=$(basename "$cfg" .yaml)
 # Match the config by file name, so ./configs/x.yaml and configs/x.yaml count as the same run.
-if pgrep -f "delegated_influence\.run .*${name}\.yaml" >/dev/null; then
+# Dry runs and status checks make no calls, so they do not count as a running experiment.
+running=$(pgrep -f "delegated_influence\.run (.*/)?${name}\.yaml" | while read -r pid; do
+    ps -o command= -p "$pid"; done | grep -v -e '--dry-run' -e '--status' || true)
+if [ -n "$running" ]; then
     echo "already running: $cfg"
+    echo "$running"
     exit 1
 fi
 # The run log goes next to the run's own data (the config's log_dir).

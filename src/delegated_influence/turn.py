@@ -23,10 +23,7 @@ def check_credits(e):
 
 
 def system_prompt(obs, persona="neutral"):
-    """The seat's rules. The trusted-agent sting uses its own short rule text (sprint work)."""
-    if obs.get("system_prompt") == "trusted_sting":
-        from delegated_influence import sting
-        return sting.system_prompt(obs)
+    """The seat's rules, plus any protocol-fixed private note for this seat."""
     return seat.build_system_prompt(obs["agent"], obs["agents"], obs["rounds"], obs["actions_per_round"],
                                     persona, obs["self_pull_reward"], obs["messages_off"],
                                     obs.get("public_chat", False), obs.get("punish_enabled", False),
@@ -141,11 +138,12 @@ async def drive_episode(state, rng, generators, personas=None, call_timeout=None
             rng.shuffle(order)
             order = protocols.order_for_slot(state, order, rnd, action_number)
             for turn_index, who in enumerate(order):
-                obs = game.build_observation(state, who, rnd, action_number, turn_index)
                 if who == (state.get("protocol") or {}).get("trusted"):
                     from delegated_influence import sting  # the sting's scripted seat: fixed rule, no model call
+                    obs = {"agent": who, "round": rnd, "action_number": action_number, "turn_index": turn_index}
                     event = sting.scripted_turn(state, obs)
                 else:
+                    obs = game.build_observation(state, who, rnd, action_number, turn_index)
                     event = await take_turn(state, obs, generators[who], persona=personas.get(who, "neutral"),
                                             call_timeout=call_timeout)
                 game.apply_event(state, event)

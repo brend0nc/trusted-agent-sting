@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-10-24T20:14:26.626188+00:00",
+  "verified_at": "2026-10-25T09:07:08.547964+00:00",
   "models": {
     "grok-4.3": {
       "model": "openrouter/x-ai/grok-4.3",
@@ -124,7 +124,7 @@
             {
               "arena": "agents",
               "category": "agenticgamedev",
-              "elo": 1007,
+              "elo": 986,
               "win_rate": 28.7,
               "rank": 24
             },
@@ -166,9 +166,9 @@
             {
               "arena": "agents",
               "category": "blender3d",
-              "elo": 828,
-              "win_rate": 13.2,
-              "rank": 21
+              "elo": 800,
+              "win_rate": 11.5,
+              "rank": 22
             },
             {
               "arena": "agents",
@@ -215,9 +215,9 @@
             {
               "arena": "agents",
               "category": "spreadsheet",
-              "elo": 942,
-              "win_rate": 31.8,
-              "rank": 20
+              "elo": 948,
+              "win_rate": 40,
+              "rank": 21
             },
             {
               "arena": "agents",
@@ -229,9 +229,9 @@
             {
               "arena": "models",
               "category": "3d",
-              "elo": 1125,
+              "elo": 1122,
               "win_rate": 40.8,
-              "rank": 82
+              "rank": 81
             },
             {
               "arena": "models",
@@ -245,7 +245,7 @@
               "category": "codecategories",
               "elo": 1185,
               "win_rate": 43.6,
-              "rank": 63
+              "rank": 64
             },
             {
               "arena": "models",
@@ -258,7 +258,7 @@
               "arena": "models",
               "category": "gamedev",
               "elo": 1172,
-              "win_rate": 43,
+              "win_rate": 42.9,
               "rank": 66
             },
             {
@@ -273,14 +273,14 @@
               "category": "uicomponent",
               "elo": 1188,
               "win_rate": 44.9,
-              "rank": 62
+              "rank": 63
             },
             {
               "arena": "models",
               "category": "website",
-              "elo": 1194,
+              "elo": 1195,
               "win_rate": 44.1,
-              "rank": 68
+              "rank": 66
             }
           ],
           "artificial_analysis": {
@@ -351,7 +351,7 @@
         "status": 0,
         "uptime_last_30m": 100,
         "uptime_last_5m": 100,
-        "uptime_last_1d": 99.65277777777779,
+        "uptime_last_1d": 98.88888888888889,
         "supports_implicit_caching": true,
         "native_tools": {
           "openrouter:web_search": {
@@ -416,7 +416,7 @@
           "status": 0,
           "uptime_last_30m": 100,
           "uptime_last_5m": 100,
-          "uptime_last_1d": 99.09722222222223,
+          "uptime_last_1d": 97.56272401433692,
           "supports_implicit_caching": true,
           "native_tools": {
             "openrouter:web_search": {
@@ -480,7 +480,7 @@
           "status": 0,
           "uptime_last_30m": 100,
           "uptime_last_5m": 100,
-          "uptime_last_1d": 99.65277777777779,
+          "uptime_last_1d": 98.88888888888889,
           "supports_implicit_caching": true,
           "native_tools": {
             "openrouter:web_search": {
@@ -544,7 +544,7 @@
           "status": 0,
           "uptime_last_30m": null,
           "uptime_last_5m": null,
-          "uptime_last_1d": null,
+          "uptime_last_1d": 100,
           "supports_implicit_caching": true,
           "native_tools": {
             "openrouter:web_search": {
